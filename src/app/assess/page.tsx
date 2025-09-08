@@ -34,6 +34,40 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
+// Building blocks for measure descriptions
+const measureDescriptions = {
+  tree: {
+    'Leaf-Root': 'You bridge innovation with community, bringing creative solutions to human connections and exploring new ways to build harmony.',
+    'Root': 'You are motivated by belonging, harmony, and creating deep connections with others.',
+    'Root-Trunk': 'You blend relationship-building with systematic reliability and process improvement.',
+    'Trunk': 'You are driven by mastery, growth, and building reliable systems that stand the test of time.',
+    'Trunk-Branch': 'You combine systematic thinking with outcome-focused action and measurable impact.',
+    'Branch': 'You are motivated by achieving tangible results, driving impact, and leaving a lasting legacy.',
+    'Branch-Leaf': 'You blend results-orientation with creative innovation and exploratory thinking.',
+    'Leaf': 'You thrive on novelty, discovery, and creative exploration of new possibilities.',
+  },
+  bucketLevel: {
+    'External': 'You rely heavily on external data and validation before making decisions.',
+    'Balanced': 'You balance intuitive insights with external information in your decision-making.',
+    'Internal': 'You have strong trust in your gut feelings and internal compass.',
+  },
+  bucketThickness: {
+    'Fragile': 'Your confidence can be easily influenced by challenges or opposing viewpoints.',
+    'Moderate': 'You maintain reasonable flexibility while holding your ground when it matters.',
+    'Durable': 'Your convictions remain steady even under significant pressure or criticism.',
+  },
+  inputPipe: {
+    'Narrow': 'You prefer to act quickly with minimal information, trusting your instincts.',
+    'Moderate': 'You gather a reasonable amount of information before making decisions.',
+    'Wide': 'You conduct extensive research and seek comprehensive data before taking action.',
+  },
+  outputPipe: {
+    'Narrow': 'You process internally and share selectively, preferring quiet influence.',
+    'Moderate': 'You communicate when appropriate, balancing listening with sharing.',
+    'Wide': 'You actively share ideas and insights, naturally teaching and evangelizing.',
+  },
+};
+
 const measureConfig = {
   tree: {
     label: 'Tree',
@@ -152,6 +186,7 @@ export default function AssessPage() {
             {measureKeys.map((key, index) => (
               <Tab key={key} label={measureConfig[key].label} />
             ))}
+            <Tab label="Summary" />
           </Tabs>
 
           {measureKeys.map((measureKey, index) => (
@@ -354,6 +389,86 @@ export default function AssessPage() {
               </Box>
             </TabPanel>
           ))}
+
+          {/* Summary Tab */}
+          <TabPanel value={activeTab} index={measureKeys.length}>
+            <Box sx={{ px: 3 }}>
+              <Typography variant="h5" sx={{ mb: 3 }}>
+                Your Profile Summary
+              </Typography>
+
+              {/* Scores Overview */}
+              <Box sx={{ mb: 4, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>Current Scores</Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                  {measureKeys.map((key) => (
+                    <Chip
+                      key={key}
+                      label={`${measureConfig[key].label}: ${scores[key]} (${getZone(key, scores[key])?.label})`}
+                      sx={{
+                        bgcolor: getZone(key, scores[key])?.color,
+                        color: 'white',
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Box>
+
+              {/* Text Summary */}
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Your Wiring Description
+              </Typography>
+              
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body1" paragraph>
+                  <strong>Motivation (Tree):</strong>{' '}
+                  {(() => {
+                    const zone = getZone('tree', scores.tree);
+                    const label = zone?.label || 'Root';
+                    const cleanLabel = label.includes('Leaf-Root') ? 'Leaf-Root' : label;
+                    return measureDescriptions.tree[cleanLabel] || measureDescriptions.tree[label] || 'You are motivated by growth and change.';
+                  })()}
+                </Typography>
+
+                <Typography variant="body1" paragraph>
+                  <strong>Decision Trust (Bucket Level):</strong>{' '}
+                  {measureDescriptions.bucketLevel[getZone('bucketLevel', scores.bucketLevel)?.label || 'Balanced']}
+                </Typography>
+
+                <Typography variant="body1" paragraph>
+                  <strong>Resilience (Bucket Thickness):</strong>{' '}
+                  {measureDescriptions.bucketThickness[getZone('bucketThickness', scores.bucketThickness)?.label || 'Moderate']}
+                </Typography>
+
+                <Typography variant="body1" paragraph>
+                  <strong>Learning Style (Input Pipe):</strong>{' '}
+                  {measureDescriptions.inputPipe[getZone('inputPipe', scores.inputPipe)?.label || 'Moderate']}
+                </Typography>
+
+                <Typography variant="body1" paragraph>
+                  <strong>Sharing Style (Output Pipe):</strong>{' '}
+                  {measureDescriptions.outputPipe[getZone('outputPipe', scores.outputPipe)?.label || 'Moderate']}
+                </Typography>
+              </Box>
+
+              {/* Combined Insight */}
+              <Paper sx={{ p: 3, bgcolor: 'primary.main', color: 'white' }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Integrated Profile
+                </Typography>
+                <Typography variant="body1">
+                  Your unique combination shows someone who{' '}
+                  {scores.tree <= 50 ? 'values relationships and systems' : 'seeks impact and innovation'},
+                  {' '}with{' '}
+                  {scores.bucketLevel <= 50 ? 'data-driven' : 'intuitive'} decision-making that is{' '}
+                  {scores.bucketThickness <= 50 ? 'adaptable' : 'steadfast'}.
+                  You prefer{' '}
+                  {scores.inputPipe <= 50 ? 'quick action' : 'thorough research'} and tend to{' '}
+                  {scores.outputPipe <= 50 ? 'process internally' : 'share openly'}.
+                </Typography>
+              </Paper>
+            </Box>
+          </TabPanel>
         </Paper>
       )}
 
@@ -366,30 +481,6 @@ export default function AssessPage() {
         </Button>
       </Box>
 
-      <Paper sx={{ mt: 4, p: 3 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Current Profile Summary
-        </Typography>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(5, 1fr)' }, gap: 2 }}>
-          {measureKeys.map((key) => (
-            <Box key={key}>
-              <Typography variant="body2" color="text.secondary">
-                {measureConfig[key].label}
-              </Typography>
-              <Typography variant="h6">{scores[key]}</Typography>
-              <Chip
-                label={getZone(key, scores[key])?.label}
-                size="small"
-                sx={{
-                  bgcolor: getZone(key, scores[key])?.color,
-                  color: 'white',
-                  mt: 1,
-                }}
-              />
-            </Box>
-          ))}
-        </Box>
-      </Paper>
     </Box>
   );
 }
