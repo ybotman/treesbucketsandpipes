@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Grid, Card, CardContent, Chip, Button } from '@mui/material';
+import { Box, Typography, Paper, Card, CardContent, Chip, Button } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { ArrowBackOutlined } from '@mui/icons-material';
 import Link from 'next/link';
@@ -42,15 +43,21 @@ export default function AnalyticsPage() {
   };
 
   const getTreeType = (score: number) => {
-    if (score <= 24) return { type: 'Root', color: '#8B4789' };
-    if (score <= 49) return { type: 'Trunk', color: '#8B6B47' };
-    if (score <= 74) return { type: 'Branch', color: '#4A7C59' };
-    return { type: 'Leaf', color: '#8FBC8F' };
+    if (score <= 6) return { type: 'Leaf-Root (A)', color: '#6B5B8C', primary: 'Leaf', secondary: 'Root' };
+    if (score <= 12) return { type: 'Root', color: '#8B4789', primary: 'Root', secondary: null };
+    if (score <= 25) return { type: 'Root-Trunk', color: '#8B5768', primary: 'Root', secondary: 'Trunk' };
+    if (score <= 37) return { type: 'Trunk', color: '#8B6B47', primary: 'Trunk', secondary: null };
+    if (score <= 50) return { type: 'Trunk-Branch', color: '#6A7550', primary: 'Trunk', secondary: 'Branch' };
+    if (score <= 62) return { type: 'Branch', color: '#4A7C59', primary: 'Branch', secondary: null };
+    if (score <= 75) return { type: 'Branch-Leaf', color: '#6CA074', primary: 'Branch', secondary: 'Leaf' };
+    if (score <= 87) return { type: 'Leaf', color: '#8FBC8F', primary: 'Leaf', secondary: null };
+    return { type: 'Leaf-Root (B)', color: '#7DA589', primary: 'Leaf', secondary: 'Root' };
   };
 
   const getArchetype = (treeScore: number, outputPipe: number) => {
-    const treeType = getTreeType(treeScore).type;
-    const isPeopleOriented = ['Root', 'Leaf'].includes(treeType);
+    const treeData = getTreeType(treeScore);
+    const primaryType = treeData.primary;
+    const isPeopleOriented = ['Root', 'Leaf'].includes(primaryType);
     const isWideOutput = outputPipe > 50;
 
     if (isPeopleOriented && !isWideOutput) {
@@ -139,7 +146,7 @@ export default function AnalyticsPage() {
 
       <Grid container spacing={3}>
         {/* Primary Archetype Card */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ height: '100%', borderLeft: `4px solid ${analytics.archetype.color}` }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -157,7 +164,7 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Decision Profile Card */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -180,7 +187,7 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Radar Chart */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Profile Overview
@@ -197,7 +204,7 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Bar Chart */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Score Distribution
@@ -215,13 +222,13 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Detailed Scores */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ mb: 3 }}>
               Detailed Scores
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Tree
@@ -234,7 +241,7 @@ export default function AnalyticsPage() {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Bucket Level
@@ -243,7 +250,7 @@ export default function AnalyticsPage() {
                   <Chip label={analytics.decisionProfile.trust} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Bucket Thickness
@@ -252,7 +259,7 @@ export default function AnalyticsPage() {
                   <Chip label={analytics.decisionProfile.resilience} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Input Pipe
@@ -261,7 +268,7 @@ export default function AnalyticsPage() {
                   <Chip label={analytics.pipeProfile.input} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Output Pipe
@@ -275,25 +282,31 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Insights */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ mb: 3 }}>
               Key Insights
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Strengths
                 </Typography>
                 <Typography variant="body2">
-                  Based on your {analytics.archetype.name} archetype and {analytics.treeType.type} motivation,
-                  you excel at {analytics.treeType.type === 'Root' ? 'building harmony and connection' :
-                    analytics.treeType.type === 'Trunk' ? 'creating reliable systems and processes' :
-                    analytics.treeType.type === 'Branch' ? 'driving measurable impact and results' :
-                    'discovering innovative solutions and ideas'}.
+                  Based on your {analytics.archetype.name} archetype and {analytics.treeType.type} position,
+                  you excel at {analytics.treeType.primary === 'Root' ? 'building harmony and connection' :
+                    analytics.treeType.primary === 'Trunk' ? 'creating reliable systems and processes' :
+                    analytics.treeType.primary === 'Branch' ? 'driving measurable impact and results' :
+                    'discovering innovative solutions and ideas'}
+                  {analytics.treeType.secondary && ` while incorporating ${
+                    analytics.treeType.secondary === 'Root' ? 'relationship awareness' :
+                    analytics.treeType.secondary === 'Trunk' ? 'systematic thinking' :
+                    analytics.treeType.secondary === 'Branch' ? 'outcome focus' :
+                    'creative exploration'
+                  }`}.
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Communication Style
                 </Typography>
@@ -305,15 +318,15 @@ export default function AnalyticsPage() {
                     analytics.pipeProfile.output === 'Wide' ? 'actively share and evangelize' : 'selectively communicate'}.
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Growth Areas
                 </Typography>
                 <Typography variant="body2">
                   Consider developing complementary skills from
-                  {' '}{analytics.treeType.type === 'Root' ? 'Branch (impact focus)' :
-                    analytics.treeType.type === 'Trunk' ? 'Leaf (creative exploration)' :
-                    analytics.treeType.type === 'Branch' ? 'Root (relationship building)' :
+                  {' '}{analytics.treeType.primary === 'Root' ? 'Branch (impact focus)' :
+                    analytics.treeType.primary === 'Trunk' ? 'Leaf (creative exploration)' :
+                    analytics.treeType.primary === 'Branch' ? 'Root (relationship building)' :
                     'Trunk (systematic thinking)'} to expand your effectiveness.
                 </Typography>
               </Grid>

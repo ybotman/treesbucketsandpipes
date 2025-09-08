@@ -39,10 +39,15 @@ const measureConfig = {
     label: 'Tree',
     description: 'Motivation for Change',
     zones: [
-      { min: 1, max: 24, label: 'Root', color: '#8B4789' },
-      { min: 25, max: 49, label: 'Trunk', color: '#8B6B47' },
-      { min: 50, max: 74, label: 'Branch', color: '#4A7C59' },
-      { min: 75, max: 99, label: 'Leaf', color: '#8FBC8F' },
+      { min: 1, max: 6, label: 'Leaf-Root (A)', color: '#6B5B8C' },
+      { min: 7, max: 12, label: 'Root', color: '#8B4789' },
+      { min: 13, max: 25, label: 'Root-Trunk', color: '#8B5768' },
+      { min: 26, max: 37, label: 'Trunk', color: '#8B6B47' },
+      { min: 38, max: 50, label: 'Trunk-Branch', color: '#6A7550' },
+      { min: 51, max: 62, label: 'Branch', color: '#4A7C59' },
+      { min: 63, max: 75, label: 'Branch-Leaf', color: '#6CA074' },
+      { min: 76, max: 87, label: 'Leaf', color: '#8FBC8F' },
+      { min: 88, max: 99, label: 'Leaf-Root (B)', color: '#7DA589' },
     ],
   },
   bucketLevel: {
@@ -176,7 +181,18 @@ export default function AssessPage() {
                     onChange={(_, value) => handleScoreChange(measureKey, value as number)}
                     min={1}
                     max={99}
-                    marks={[
+                    marks={measureKey === 'tree' ? [
+                      { value: 1, label: '1' },
+                      { value: 6, label: '6' },
+                      { value: 12, label: '12' },
+                      { value: 25, label: '25' },
+                      { value: 37, label: '37' },
+                      { value: 50, label: '50' },
+                      { value: 62, label: '62' },
+                      { value: 75, label: '75' },
+                      { value: 87, label: '87' },
+                      { value: 99, label: '99' },
+                    ] : [
                       { value: 1, label: '1' },
                       { value: 25, label: '25' },
                       { value: 50, label: '50' },
@@ -191,24 +207,149 @@ export default function AssessPage() {
                   Zones
                 </Typography>
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-                  {measureConfig[measureKey].zones.map((zone) => (
-                    <Card
-                      key={zone.label}
-                      sx={{
-                        borderLeft: `4px solid ${zone.color}`,
-                        opacity: scores[measureKey] >= zone.min && scores[measureKey] <= zone.max ? 1 : 0.5,
-                      }}
-                    >
-                      <CardContent>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                          {zone.label}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Range: {zone.min}-{zone.max}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  ))}
+                  {measureKey === 'tree' ? (
+                    <>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #7DA589`,
+                          opacity: (scores.tree >= 1 && scores.tree <= 6) || (scores.tree >= 88 && scores.tree <= 99) ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Leaf-Root
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 1-6, 88-99
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #8B4789`,
+                          opacity: scores.tree >= 7 && scores.tree <= 12 ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Root
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 7-12
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #8B5768`,
+                          opacity: scores.tree >= 13 && scores.tree <= 25 ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Root-Trunk
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 13-25
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #8B6B47`,
+                          opacity: scores.tree >= 26 && scores.tree <= 37 ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Trunk
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 26-37
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #6A7550`,
+                          opacity: scores.tree >= 38 && scores.tree <= 50 ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Trunk-Branch
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 38-50
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #4A7C59`,
+                          opacity: scores.tree >= 51 && scores.tree <= 62 ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Branch
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 51-62
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #6CA074`,
+                          opacity: scores.tree >= 63 && scores.tree <= 75 ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Branch-Leaf
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 63-75
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Card
+                        sx={{
+                          borderLeft: `4px solid #8FBC8F`,
+                          opacity: scores.tree >= 76 && scores.tree <= 87 ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            Leaf
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: 76-87
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </>
+                  ) : (
+                    measureConfig[measureKey].zones.map((zone) => (
+                      <Card
+                        key={zone.label}
+                        sx={{
+                          borderLeft: `4px solid ${zone.color}`,
+                          opacity: scores[measureKey] >= zone.min && scores[measureKey] <= zone.max ? 1 : 0.5,
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                            {zone.label}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Range: {zone.min}-{zone.max}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
                 </Box>
               </Box>
             </TabPanel>
