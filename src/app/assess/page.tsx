@@ -409,7 +409,7 @@ export default function AssessPage() {
 
         {/* Manual Override Tab */}
         <TabPanel value={activeTab} index={1}>
-          <Box sx={{ px: 3 }}>
+          <Box sx={{ px: 3, maxWidth: 800, mx: 'auto' }}>
             <Typography variant="h6" sx={{ mb: 3 }}>
               Manual Score Override
             </Typography>
@@ -417,11 +417,14 @@ export default function AssessPage() {
               Directly set your scores on each measure (1-99 scale)
             </Alert>
 
-            <Grid container spacing={4}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {/* Tree */}
-              <Grid size={{ xs: 12 }}>
+              <Box>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Tree (Motivation)
+                  Tree (Motivation for Change)
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  What drives you to act and change
                 </Typography>
                 <Slider
                   value={manualScores.tree}
@@ -437,64 +440,96 @@ export default function AssessPage() {
                   ]}
                   valueLabelDisplay="on"
                 />
-              </Grid>
+              </Box>
 
               {/* Bucket */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Box>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Bucket (Capacity)
+                  Bucket (Knowledge Capacity)
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  How much you can hold and juggle at once
                 </Typography>
                 <Slider
                   value={manualScores.bucket}
                   onChange={(_, value) => handleManualScoreChange('bucket', value as number)}
                   min={1}
                   max={99}
+                  marks={[
+                    { value: 1, label: 'Focused' },
+                    { value: 50, label: 'Balanced' },
+                    { value: 99, label: 'Multiple' }
+                  ]}
                   valueLabelDisplay="on"
                 />
-              </Grid>
+              </Box>
 
               {/* Thickness */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Box>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Thickness (Boundaries)
+                  Thickness (Questioning & Boundaries)
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  How much you question and protect your boundaries
                 </Typography>
                 <Slider
                   value={manualScores.thickness}
                   onChange={(_, value) => handleManualScoreChange('thickness', value as number)}
                   min={1}
                   max={99}
+                  marks={[
+                    { value: 1, label: 'Permeable' },
+                    { value: 50, label: 'Flexible' },
+                    { value: 99, label: 'Strong' }
+                  ]}
                   valueLabelDisplay="on"
                 />
-              </Grid>
+              </Box>
 
               {/* Input */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Box>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Input (Learning)
+                  Input (Learning Style)
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  How you gather and process information
                 </Typography>
                 <Slider
                   value={manualScores.input}
                   onChange={(_, value) => handleManualScoreChange('input', value as number)}
                   min={1}
                   max={99}
+                  marks={[
+                    { value: 1, label: 'Selective' },
+                    { value: 50, label: 'Moderate' },
+                    { value: 99, label: 'Wide' }
+                  ]}
                   valueLabelDisplay="on"
                 />
-              </Grid>
+              </Box>
 
               {/* Output */}
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Box>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Output (Expression)
+                  Output (Sharing Style)
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  How you express and share what you know
                 </Typography>
                 <Slider
                   value={manualScores.output}
                   onChange={(_, value) => handleManualScoreChange('output', value as number)}
                   min={1}
                   max={99}
+                  marks={[
+                    { value: 1, label: 'Internal' },
+                    { value: 50, label: 'Balanced' },
+                    { value: 99, label: 'External' }
+                  ]}
                   valueLabelDisplay="on"
                 />
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
 
             <Box sx={{ mt: 4, textAlign: 'center' }}>
               <Button
