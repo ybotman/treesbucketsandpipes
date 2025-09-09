@@ -137,32 +137,52 @@
     },
     {
       "id": "thickness_1",
-      "text": "I can easily separate my work concerns from my personal life.",
+      "text": "Even after being proven wrong, I can still trust my ability to make good decisions in the future.",
       "measure": "thickness"
     },
     {
       "id": "thickness_2",
-      "text": "I maintain clear boundaries between different areas of my life.",
+      "text": "I tend to recover quickly from mistakes or failures without carrying lasting self-doubt.",
       "measure": "thickness"
     },
     {
       "id": "thickness_3",
-      "text": "Other people's emotions or problems rarely affect my own emotional state.",
+      "text": "When I realize my understanding was flat-out wrong, I use it as learning, not as proof that I can't trust myself.",
+      "measure": "thickness"
+    },
+    {
+      "id": "thickness_4",
+      "text": "I can maintain confidence in my judgment even when others strongly disagree with me.",
+      "measure": "thickness"
+    },
+    {
+      "id": "thickness_5",
+      "text": "Criticism or setbacks strengthen my resolve rather than making me question everything.",
       "measure": "thickness"
     },
     {
       "id": "input_1",
-      "text": "I actively seek out new information and perspectives, even when I don't immediately need them.",
+      "text": "I often delay decisions until I have gathered multiple perspectives or data points.",
       "measure": "input"
     },
     {
       "id": "input_2",
-      "text": "I enjoy consuming content (books, articles, videos) across a wide range of topics.",
+      "text": "I feel uneasy acting on instinct alone; I prefer to do some research first.",
       "measure": "input"
     },
     {
       "id": "input_3",
-      "text": "I feel uncomfortable when I'm not learning something new or gathering fresh insights.",
+      "text": "I enjoy reading, studying, or consulting others before I make an important choice.",
+      "measure": "input"
+    },
+    {
+      "id": "input_4",
+      "text": "I believe more information almost always leads to better decisions.",
+      "measure": "input"
+    },
+    {
+      "id": "input_5",
+      "text": "I actively seek out new information and perspectives, even when I don't immediately need them.",
       "measure": "input"
     },
     {
