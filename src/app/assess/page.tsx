@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Box,
   Tabs,
@@ -26,7 +26,8 @@ import {
   SaveOutlined, 
   CalculateOutlined,
   SummarizeOutlined,
-  RefreshOutlined
+  RefreshOutlined,
+  ClearOutlined
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
@@ -68,12 +69,21 @@ export default function AssessPage() {
   });
   const [scoreSource, setScoreSource] = useState<'questions' | 'manual'>('manual');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [tempQuestionValue, setTempQuestionValue] = useState(50);
+  const [tempQuestionValue, setTempQuestionValue] = useState<number | null>(null);
 
   // Randomize questions once on mount
   const randomizedQuestions = useMemo(() => {
     return [...questions.questions].sort(() => Math.random() - 0.5);
   }, []);
+  
+  // Initialize temp value when first loading or changing questions
+  useEffect(() => {
+    if (randomizedQuestions.length > 0) {
+      setTempQuestionValue(
+        questionResponses.get(randomizedQuestions[currentQuestionIndex].id) || null
+      );
+    }
+  }, [currentQuestionIndex, randomizedQuestions]);
 
   // Calculate scores from questions
   const calculatedScores = useMemo((): AssessmentScores | null => {
@@ -224,12 +234,20 @@ export default function AssessPage() {
                           Your Response
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                          <Typography variant="h5" color="primary" fontWeight="bold">
-                            {tempQuestionValue}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            / 99
-                          </Typography>
+                          {tempQuestionValue !== null ? (
+                            <>
+                              <Typography variant="h5" color="primary" fontWeight="bold">
+                                {tempQuestionValue}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                / 99
+                              </Typography>
+                            </>
+                          ) : (
+                            <Typography variant="h5" color="text.secondary">
+                              Not Set
+                            </Typography>
+                          )}
                           {questionResponses.has(randomizedQuestions[currentQuestionIndex].id) && (
                             <Chip 
                               label={`Saved: ${questionResponses.get(randomizedQuestions[currentQuestionIndex].id)}`} 
@@ -242,13 +260,18 @@ export default function AssessPage() {
                       </Box>
                       
                       <Slider
-                        value={tempQuestionValue}
+                        value={tempQuestionValue || 50}
                         onChange={(_, value) => setTempQuestionValue(value as number)}
                         min={questions.scale.min}
                         max={questions.scale.max}
                         marks={questions.scale.markers}
                         valueLabelDisplay="auto"
-                        sx={{ mb: 4 }}
+                        sx={{ 
+                          mb: 4,
+                          '& .MuiSlider-thumb': {
+                            display: tempQuestionValue === null ? 'none' : 'block'
+                          }
+                        }}
                       />
                       
                       {/* Quick select buttons */}
@@ -273,25 +296,44 @@ export default function AssessPage() {
                         ))}
                       </Box>
                       
-                      {/* Submit button */}
-                      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                      {/* Submit and Reset buttons */}
+                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
+                        <Button
+                          variant="outlined"
+                          startIcon={<ClearOutlined />}
+                          onClick={() => {
+                            setTempQuestionValue(null);
+                            // Also remove from saved responses if exists
+                            if (questionResponses.has(randomizedQuestions[currentQuestionIndex].id)) {
+                              const newResponses = new Map(questionResponses);
+                              newResponses.delete(randomizedQuestions[currentQuestionIndex].id);
+                              setQuestionResponses(newResponses);
+                            }
+                          }}
+                          disabled={tempQuestionValue === null && !questionResponses.has(randomizedQuestions[currentQuestionIndex].id)}
+                        >
+                          Reset
+                        </Button>
                         <Button
                           variant="contained"
                           size="large"
                           onClick={() => {
-                            handleQuestionResponse(
-                              randomizedQuestions[currentQuestionIndex].id,
-                              tempQuestionValue
-                            );
-                            if (currentQuestionIndex < randomizedQuestions.length - 1) {
-                              setCurrentQuestionIndex(currentQuestionIndex + 1);
-                              setTempQuestionValue(
-                                questionResponses.get(randomizedQuestions[currentQuestionIndex + 1].id) || 
-                                questions.scale.default
+                            if (tempQuestionValue !== null) {
+                              handleQuestionResponse(
+                                randomizedQuestions[currentQuestionIndex].id,
+                                tempQuestionValue
                               );
+                              if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                                setCurrentQuestionIndex(currentQuestionIndex + 1);
+                                setTempQuestionValue(
+                                  questionResponses.get(randomizedQuestions[currentQuestionIndex + 1].id) || 
+                                  null
+                                );
+                              }
                             }
                           }}
                           sx={{ minWidth: 200 }}
+                          disabled={tempQuestionValue === null}
                         >
                           Submit Answer
                         </Button>
@@ -308,7 +350,7 @@ export default function AssessPage() {
                       const newIndex = currentQuestionIndex - 1;
                       setCurrentQuestionIndex(newIndex);
                       setTempQuestionValue(
-                        questionResponses.get(randomizedQuestions[newIndex].id) || questions.scale.default
+                        questionResponses.get(randomizedQuestions[newIndex].id) || null
                       );
                     }}
                   >
@@ -337,7 +379,7 @@ export default function AssessPage() {
                           onClick={() => {
                             setCurrentQuestionIndex(qIndex);
                             setTempQuestionValue(
-                              questionResponses.get(randomizedQuestions[qIndex].id) || questions.scale.default
+                              questionResponses.get(randomizedQuestions[qIndex].id) || null
                             );
                           }}
                         />
@@ -352,7 +394,7 @@ export default function AssessPage() {
                         const newIndex = currentQuestionIndex + 1;
                         setCurrentQuestionIndex(newIndex);
                         setTempQuestionValue(
-                          questionResponses.get(randomizedQuestions[newIndex].id) || questions.scale.default
+                          questionResponses.get(randomizedQuestions[newIndex].id) || null
                         );
                       }
                     }}
