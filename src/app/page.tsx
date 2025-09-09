@@ -103,19 +103,19 @@ export default function HomePage() {
           How It Works
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="h6" sx={{ mb: 1 }}>1. Take the Assessment</Typography>
             <Typography variant="body2" color="text.secondary">
               Answer questions or use manual override to set your scores across 5 key measures.
             </Typography>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="h6" sx={{ mb: 1 }}>2. Get Your Profile</Typography>
             <Typography variant="body2" color="text.secondary">
               Receive detailed analytics showing your Tree type, Bucket profile, and Pipe preferences.
             </Typography>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant="h6" sx={{ mb: 1 }}>3. Apply Your Insights</Typography>
             <Typography variant="body2" color="text.secondary">
               Use your archetype to improve relationships, team dynamics, and personal growth.
