@@ -426,28 +426,28 @@ export default function AssessPage() {
                     const zone = getZone('tree', scores.tree);
                     const label = zone?.label || 'Root';
                     const cleanLabel = label.includes('Leaf-Root') ? 'Leaf-Root' : label;
-                    return measureDescriptions.tree[cleanLabel] || measureDescriptions.tree[label] || 'You are motivated by growth and change.';
+                    return measureDescriptions.tree[cleanLabel as keyof typeof measureDescriptions.tree] || 'You are motivated by growth and change.';
                   })()}
                 </Typography>
 
                 <Typography variant="body1" paragraph>
                   <strong>Decision Trust (Bucket Level):</strong>{' '}
-                  {measureDescriptions.bucketLevel[getZone('bucketLevel', scores.bucketLevel)?.label || 'Balanced']}
+                  {measureDescriptions.bucketLevel[(getZone('bucketLevel', scores.bucketLevel)?.label || 'Balanced') as keyof typeof measureDescriptions.bucketLevel]}
                 </Typography>
 
                 <Typography variant="body1" paragraph>
                   <strong>Resilience (Bucket Thickness):</strong>{' '}
-                  {measureDescriptions.bucketThickness[getZone('bucketThickness', scores.bucketThickness)?.label || 'Moderate']}
+                  {measureDescriptions.bucketThickness[(getZone('bucketThickness', scores.bucketThickness)?.label || 'Moderate') as keyof typeof measureDescriptions.bucketThickness]}
                 </Typography>
 
                 <Typography variant="body1" paragraph>
                   <strong>Learning Style (Input Pipe):</strong>{' '}
-                  {measureDescriptions.inputPipe[getZone('inputPipe', scores.inputPipe)?.label || 'Moderate']}
+                  {measureDescriptions.inputPipe[(getZone('inputPipe', scores.inputPipe)?.label || 'Moderate') as keyof typeof measureDescriptions.inputPipe]}
                 </Typography>
 
                 <Typography variant="body1" paragraph>
                   <strong>Sharing Style (Output Pipe):</strong>{' '}
-                  {measureDescriptions.outputPipe[getZone('outputPipe', scores.outputPipe)?.label || 'Moderate']}
+                  {measureDescriptions.outputPipe[(getZone('outputPipe', scores.outputPipe)?.label || 'Moderate') as keyof typeof measureDescriptions.outputPipe]}
                 </Typography>
               </Box>
 

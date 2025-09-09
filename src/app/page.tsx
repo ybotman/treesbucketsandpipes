@@ -68,7 +68,7 @@ export default function HomePage() {
 
       <Grid container spacing={3}>
         {models.map((model, index) => (
-          <Grid item xs={12} md={6} key={model.title}>
+          <Grid size={{ xs: 12, md: 6 }} key={model.title}>
             <MotionCard
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

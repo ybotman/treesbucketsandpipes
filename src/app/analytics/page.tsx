@@ -145,7 +145,7 @@ export default function AnalyticsPage() {
 
       <Grid container spacing={3}>
         {/* Primary Archetype Card */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ height: '100%', borderLeft: `4px solid ${analytics.archetype.color}` }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -163,7 +163,7 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Decision Profile Card */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -186,7 +186,7 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Radar Chart */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Profile Overview
@@ -203,7 +203,7 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Bar Chart */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Score Distribution
@@ -221,13 +221,13 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Detailed Scores */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ mb: 3 }}>
               Detailed Scores
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Tree
@@ -240,7 +240,7 @@ export default function AnalyticsPage() {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Bucket Level
@@ -249,7 +249,7 @@ export default function AnalyticsPage() {
                   <Chip label={analytics.decisionProfile.trust} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Bucket Thickness
@@ -258,7 +258,7 @@ export default function AnalyticsPage() {
                   <Chip label={analytics.decisionProfile.resilience} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Input Pipe
@@ -267,7 +267,7 @@ export default function AnalyticsPage() {
                   <Chip label={analytics.pipeProfile.input} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={6} md={2.4}>
+              <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
                     Output Pipe
@@ -281,13 +281,13 @@ export default function AnalyticsPage() {
         </Grid>
 
         {/* Insights */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ mb: 3 }}>
               Key Insights
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Strengths
                 </Typography>
@@ -305,7 +305,7 @@ export default function AnalyticsPage() {
                   }`}.
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Communication Style
                 </Typography>
@@ -317,7 +317,7 @@ export default function AnalyticsPage() {
                     analytics.pipeProfile.output === 'Wide' ? 'actively share and evangelize' : 'selectively communicate'}.
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Growth Areas
                 </Typography>
