@@ -221,7 +221,33 @@ export default function AssessPage() {
               <Box>
                 <Card sx={{ mb: 3 }}>
                   <CardContent>
-                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box sx={{ mb: 2 }}>
+                      {/* Question type indicator */}
+                      <Chip 
+                        label={(() => {
+                          const q = randomizedQuestions[currentQuestionIndex];
+                          if (q.measure === 'tree') {
+                            const subtypeLabels = {
+                              'root': 'Tree - Harmony & Connection',
+                              'trunk': 'Tree - Mastery & Growth',
+                              'branch': 'Tree - Impact & Legacy',
+                              'leaf': 'Tree - Novelty & Discovery'
+                            };
+                            return subtypeLabels[q.subtype as keyof typeof subtypeLabels] || 'Tree';
+                          }
+                          const measureLabels = {
+                            'bucket': 'Bucket - Knowledge Capacity',
+                            'thickness': 'Thickness - Questioning & Boundaries',
+                            'input': 'Input - Learning Style',
+                            'output': 'Output - Sharing Style'
+                          };
+                          return measureLabels[q.measure as keyof typeof measureLabels] || q.measure;
+                        })()}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                      />
                       <Typography variant="body1" sx={{ fontSize: '1.2rem', fontWeight: 500 }}>
                         {randomizedQuestions[currentQuestionIndex].text}
                       </Typography>
