@@ -1,0 +1,196 @@
+{
+  "questions": [
+    {
+      "id": "tree_root_1",
+      "text": "I feel responsible for keeping peace and harmony between people, even when I'm not asked to.",
+      "measure": "tree",
+      "subtype": "root"
+    },
+    {
+      "id": "tree_root_2",
+      "text": "I put effort into making sure others feel included, accepted, or cared for.",
+      "measure": "tree",
+      "subtype": "root"
+    },
+    {
+      "id": "tree_root_3",
+      "text": "Conflict makes me uncomfortable, and I naturally look for ways to ease tension or restore balance.",
+      "measure": "tree",
+      "subtype": "root"
+    },
+    {
+      "id": "tree_root_4",
+      "text": "I am motivated to act when someone I care about feels disconnected, left out, or unsafe.",
+      "measure": "tree",
+      "subtype": "root"
+    },
+    {
+      "id": "tree_root_5",
+      "text": "I believe the world needs to listen to each other more in order to heal.",
+      "measure": "tree",
+      "subtype": "root"
+    },
+    {
+      "id": "tree_trunk_1",
+      "text": "I am motivated by a desire to become stronger, more skilled, or more capable in what I do.",
+      "measure": "tree",
+      "subtype": "trunk"
+    },
+    {
+      "id": "tree_trunk_2",
+      "text": "I value discipline and persistence, even when progress feels slow.",
+      "measure": "tree",
+      "subtype": "trunk"
+    },
+    {
+      "id": "tree_trunk_3",
+      "text": "I enjoy working on a topic until I fully know it.",
+      "measure": "tree",
+      "subtype": "trunk"
+    },
+    {
+      "id": "tree_trunk_4",
+      "text": "I love to develop skills by focusing deeply, finding mastery within the details.",
+      "measure": "tree",
+      "subtype": "trunk"
+    },
+    {
+      "id": "tree_trunk_5",
+      "text": "I believe that becoming more skillful makes me a better and more complete person.",
+      "measure": "tree",
+      "subtype": "trunk"
+    },
+    {
+      "id": "tree_branch_1",
+      "text": "I think about how my actions affect the larger system, organization, or community.",
+      "measure": "tree",
+      "subtype": "branch"
+    },
+    {
+      "id": "tree_branch_2",
+      "text": "I feel motivated to make a difference that will last beyond myself.",
+      "measure": "tree",
+      "subtype": "branch"
+    },
+    {
+      "id": "tree_branch_3",
+      "text": "I measure success by the impact my work has on others or on the future.",
+      "measure": "tree",
+      "subtype": "branch"
+    },
+    {
+      "id": "tree_branch_4",
+      "text": "I feel driven to influence or shape outcomes at a broader scale, not just for myself.",
+      "measure": "tree",
+      "subtype": "branch"
+    },
+    {
+      "id": "tree_branch_5",
+      "text": "I believe I have, and want to have, a meaningful impact on the world.",
+      "measure": "tree",
+      "subtype": "branch"
+    },
+    {
+      "id": "tree_leaf_1",
+      "text": "I feel energized by new ideas, experiences, or changes.",
+      "measure": "tree",
+      "subtype": "leaf"
+    },
+    {
+      "id": "tree_leaf_2",
+      "text": "I get restless when things feel repetitive, predictable, or stagnant.",
+      "measure": "tree",
+      "subtype": "leaf"
+    },
+    {
+      "id": "tree_leaf_3",
+      "text": "I am curious and drawn to experiment, even if the outcome is uncertain.",
+      "measure": "tree",
+      "subtype": "leaf"
+    },
+    {
+      "id": "tree_leaf_4",
+      "text": "I am motivated by the excitement of starting something fresh rather than maintaining what already exists.",
+      "measure": "tree",
+      "subtype": "leaf"
+    },
+    {
+      "id": "tree_leaf_5",
+      "text": "I believe the world has so much to offer, and I want to explore and experience it all.",
+      "measure": "tree",
+      "subtype": "leaf"
+    },
+    {
+      "id": "bucket_1",
+      "text": "I prefer to maintain multiple interests and activities simultaneously rather than focusing on just one.",
+      "measure": "bucket"
+    },
+    {
+      "id": "bucket_2",
+      "text": "I find it energizing to juggle different projects or responsibilities at the same time.",
+      "measure": "bucket"
+    },
+    {
+      "id": "bucket_3",
+      "text": "I feel constrained when I have to dedicate all my attention to a single area for too long.",
+      "measure": "bucket"
+    },
+    {
+      "id": "thickness_1",
+      "text": "I can easily separate my work concerns from my personal life.",
+      "measure": "thickness"
+    },
+    {
+      "id": "thickness_2",
+      "text": "I maintain clear boundaries between different areas of my life.",
+      "measure": "thickness"
+    },
+    {
+      "id": "thickness_3",
+      "text": "Other people's emotions or problems rarely affect my own emotional state.",
+      "measure": "thickness"
+    },
+    {
+      "id": "input_1",
+      "text": "I actively seek out new information and perspectives, even when I don't immediately need them.",
+      "measure": "input"
+    },
+    {
+      "id": "input_2",
+      "text": "I enjoy consuming content (books, articles, videos) across a wide range of topics.",
+      "measure": "input"
+    },
+    {
+      "id": "input_3",
+      "text": "I feel uncomfortable when I'm not learning something new or gathering fresh insights.",
+      "measure": "input"
+    },
+    {
+      "id": "output_1",
+      "text": "I feel a strong need to share my thoughts and ideas with others.",
+      "measure": "output"
+    },
+    {
+      "id": "output_2",
+      "text": "I process my thinking best by talking it through or writing it out.",
+      "measure": "output"
+    },
+    {
+      "id": "output_3",
+      "text": "I feel frustrated when I have insights or knowledge that I can't share with someone.",
+      "measure": "output"
+    }
+  ],
+  "scale": {
+    "min": 1,
+    "max": 99,
+    "default": 50,
+    "markers": [
+      { "value": 1, "label": "Strongly Disagree" },
+      { "value": 25, "label": "Disagree" },
+      { "value": 50, "label": "Neutral" },
+      { "value": 75, "label": "Agree" },
+      { "value": 99, "label": "Strongly Agree" }
+    ]
+  }
+}

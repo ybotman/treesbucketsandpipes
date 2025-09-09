@@ -1,23 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Box,
   Tabs,
   Tab,
   Paper,
   Button,
-  ToggleButtonGroup,
-  ToggleButton,
   Typography,
   Slider,
   Chip,
   Card,
   CardContent,
   LinearProgress,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  Grid,
+  Alert,
 } from '@mui/material';
-import { QuizOutlined, TuneOutlined, SaveOutlined, CalculateOutlined } from '@mui/icons-material';
+import { 
+  QuizOutlined, 
+  TuneOutlined, 
+  SaveOutlined, 
+  CalculateOutlined,
+  SummarizeOutlined,
+  RefreshOutlined
+} from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
+import questions from '@/data/questions.json';
+import descriptions from '@/data/descriptions.json';
+import { 
+  processQuestionResponses, 
+  calculateInteractionArchetype,
+  getMeasureDescription,
+  getStrengthDescription,
+  type AssessmentScores 
+} from '@/lib/calculations';
+import TreeCompass from '@/components/TreeCompass';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -34,453 +55,542 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-// Building blocks for measure descriptions
-const measureDescriptions = {
-  tree: {
-    'Leaf-Root': 'You bridge innovation with community, bringing creative solutions to human connections and exploring new ways to build harmony.',
-    'Root': 'You are motivated by belonging, harmony, and creating deep connections with others.',
-    'Root-Trunk': 'You blend relationship-building with systematic reliability and process improvement.',
-    'Trunk': 'You are driven by mastery, growth, and building reliable systems that stand the test of time.',
-    'Trunk-Branch': 'You combine systematic thinking with outcome-focused action and measurable impact.',
-    'Branch': 'You are motivated by achieving tangible results, driving impact, and leaving a lasting legacy.',
-    'Branch-Leaf': 'You blend results-orientation with creative innovation and exploratory thinking.',
-    'Leaf': 'You thrive on novelty, discovery, and creative exploration of new possibilities.',
-  },
-  bucketLevel: {
-    'External': 'You rely heavily on external data and validation before making decisions.',
-    'Balanced': 'You balance intuitive insights with external information in your decision-making.',
-    'Internal': 'You have strong trust in your gut feelings and internal compass.',
-  },
-  bucketThickness: {
-    'Fragile': 'Your confidence can be easily influenced by challenges or opposing viewpoints.',
-    'Moderate': 'You maintain reasonable flexibility while holding your ground when it matters.',
-    'Durable': 'Your convictions remain steady even under significant pressure or criticism.',
-  },
-  inputPipe: {
-    'Narrow': 'You prefer to act quickly with minimal information, trusting your instincts.',
-    'Moderate': 'You gather a reasonable amount of information before making decisions.',
-    'Wide': 'You conduct extensive research and seek comprehensive data before taking action.',
-  },
-  outputPipe: {
-    'Narrow': 'You process internally and share selectively, preferring quiet influence.',
-    'Moderate': 'You communicate when appropriate, balancing listening with sharing.',
-    'Wide': 'You actively share ideas and insights, naturally teaching and evangelizing.',
-  },
-};
-
-const measureConfig = {
-  tree: {
-    label: 'Tree',
-    description: 'Motivation for Change',
-    zones: [
-      { min: 1, max: 6, label: 'Leaf-Root (A)', color: '#6B5B8C' },
-      { min: 7, max: 12, label: 'Root', color: '#8B4789' },
-      { min: 13, max: 25, label: 'Root-Trunk', color: '#8B5768' },
-      { min: 26, max: 37, label: 'Trunk', color: '#8B6B47' },
-      { min: 38, max: 50, label: 'Trunk-Branch', color: '#6A7550' },
-      { min: 51, max: 62, label: 'Branch', color: '#4A7C59' },
-      { min: 63, max: 75, label: 'Branch-Leaf', color: '#6CA074' },
-      { min: 76, max: 87, label: 'Leaf', color: '#8FBC8F' },
-      { min: 88, max: 99, label: 'Leaf-Root (B)', color: '#7DA589' },
-    ],
-  },
-  bucketLevel: {
-    label: 'Bucket Level',
-    description: 'Trust in Gut',
-    zones: [
-      { min: 1, max: 33, label: 'External', color: '#FFE4E1' },
-      { min: 34, max: 66, label: 'Balanced', color: '#F0E68C' },
-      { min: 67, max: 99, label: 'Internal', color: '#98FB98' },
-    ],
-  },
-  bucketThickness: {
-    label: 'Bucket Thickness',
-    description: 'Resilience',
-    zones: [
-      { min: 1, max: 33, label: 'Fragile', color: '#FFE4E1' },
-      { min: 34, max: 66, label: 'Moderate', color: '#F0E68C' },
-      { min: 67, max: 99, label: 'Durable', color: '#98FB98' },
-    ],
-  },
-  inputPipe: {
-    label: 'Input Pipe',
-    description: 'Learning Style',
-    zones: [
-      { min: 1, max: 33, label: 'Narrow', color: '#D3D3D3' },
-      { min: 34, max: 66, label: 'Moderate', color: '#87CEEB' },
-      { min: 67, max: 99, label: 'Wide', color: '#4682B4' },
-    ],
-  },
-  outputPipe: {
-    label: 'Output Pipe',
-    description: 'Sharing Style',
-    zones: [
-      { min: 1, max: 33, label: 'Narrow', color: '#D3D3D3' },
-      { min: 34, max: 66, label: 'Moderate', color: '#87CEEB' },
-      { min: 67, max: 99, label: 'Wide', color: '#4682B4' },
-    ],
-  },
-};
-
 export default function AssessPage() {
   const router = useRouter();
-  const [mode, setMode] = useState<'questions' | 'override'>('override');
   const [activeTab, setActiveTab] = useState(0);
-  const [scores, setScores] = useState({
+  const [questionResponses, setQuestionResponses] = useState<Map<string, number>>(new Map());
+  const [manualScores, setManualScores] = useState({
     tree: 50,
-    bucketLevel: 50,
-    bucketThickness: 50,
-    inputPipe: 50,
-    outputPipe: 50,
+    bucket: 50,
+    thickness: 50,
+    input: 50,
+    output: 50,
   });
+  const [scoreSource, setScoreSource] = useState<'questions' | 'manual'>('manual');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [tempQuestionValue, setTempQuestionValue] = useState(50);
 
-  const handleModeChange = (_: React.MouseEvent<HTMLElement>, newMode: 'questions' | 'override' | null) => {
-    if (newMode !== null) {
-      setMode(newMode);
+  // Randomize questions once on mount
+  const randomizedQuestions = useMemo(() => {
+    return [...questions.questions].sort(() => Math.random() - 0.5);
+  }, []);
+
+  // Calculate scores from questions
+  const calculatedScores = useMemo((): AssessmentScores | null => {
+    if (questionResponses.size < randomizedQuestions.length) {
+      return null;
+    }
+    return processQuestionResponses(questionResponses, randomizedQuestions);
+  }, [questionResponses, randomizedQuestions]);
+
+  // Get final scores based on source
+  const finalScores = useMemo(() => {
+    if (scoreSource === 'questions' && calculatedScores) {
+      return {
+        tree: calculatedScores.tree,
+        bucket: calculatedScores.bucket,
+        thickness: calculatedScores.thickness,
+        input: calculatedScores.input,
+        output: calculatedScores.output,
+      };
+    }
+    return {
+      tree: { score: manualScores.tree, strength: 50, subtype: 'root', subtypeName: 'Root' },
+      bucket: manualScores.bucket,
+      thickness: manualScores.thickness,
+      input: manualScores.input,
+      output: manualScores.output,
+    };
+  }, [scoreSource, calculatedScores, manualScores]);
+
+  // Calculate interaction archetype
+  const interactionArchetype = useMemo(() => {
+    const treeScore = typeof finalScores.tree === 'object' 
+      ? finalScores.tree.score 
+      : finalScores.tree;
+    return calculateInteractionArchetype(treeScore, finalScores.output);
+  }, [finalScores]);
+
+  const handleQuestionResponse = (questionId: string, value: number) => {
+    const newResponses = new Map(questionResponses);
+    newResponses.set(questionId, value);
+    setQuestionResponses(newResponses);
+  };
+
+  const handleManualScoreChange = (measure: keyof typeof manualScores, value: number) => {
+    setManualScores((prev) => ({ ...prev, [measure]: value }));
+    setScoreSource('manual');
+  };
+
+  const handleCalculateFromQuestions = () => {
+    if (calculatedScores) {
+      setScoreSource('questions');
+      setActiveTab(2); // Go to summary
     }
   };
 
-  const handleScoreChange = (measure: keyof typeof scores, value: number) => {
-    setScores((prev) => ({ ...prev, [measure]: value }));
-  };
-
-  const getZone = (measure: keyof typeof measureConfig, value: number) => {
-    const config = measureConfig[measure];
-    return config.zones.find((zone) => value >= zone.min && value <= zone.max);
-  };
-
-  const handleCalculate = () => {
-    localStorage.setItem('tbap_scores', JSON.stringify(scores));
+  const handleSaveResults = () => {
+    localStorage.setItem('tbap_scores', JSON.stringify(finalScores));
+    localStorage.setItem('tbap_archetype', JSON.stringify(interactionArchetype));
     router.push('/analytics');
   };
 
-  const measureKeys = Object.keys(measureConfig) as Array<keyof typeof measureConfig>;
+  const resetQuestions = () => {
+    setQuestionResponses(new Map());
+    setCurrentQuestionIndex(0);
+  };
+
+  const progress = (questionResponses.size / randomizedQuestions.length) * 100;
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          Assessment
+          TBAP Assessment
         </Typography>
-        <ToggleButtonGroup value={mode} exclusive onChange={handleModeChange} size="small">
-          <ToggleButton value="questions">
-            <QuizOutlined sx={{ mr: 1 }} />
-            Questions
-          </ToggleButton>
-          <ToggleButton value="override">
-            <TuneOutlined sx={{ mr: 1 }} />
-            Override
-          </ToggleButton>
-        </ToggleButtonGroup>
+        {scoreSource === 'questions' && calculatedScores && (
+          <Chip 
+            label="Scores from Questions" 
+            color="primary" 
+            variant="outlined"
+          />
+        )}
       </Box>
 
-      {mode === 'questions' ? (
-        <Paper sx={{ p: 3 }}>
-          <Typography variant="body1" color="text.secondary">
-            Question mode coming soon. For now, please use Override mode to directly set your scores.
-          </Typography>
-        </Paper>
-      ) : (
-        <Paper>
-          <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)} variant="scrollable" scrollButtons="auto">
-            {measureKeys.map((key, index) => (
-              <Tab key={key} label={measureConfig[key].label} />
-            ))}
-            <Tab label="Summary" />
-          </Tabs>
+      <Paper>
+        <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)}>
+          <Tab icon={<QuizOutlined />} label="Questions" />
+          <Tab icon={<TuneOutlined />} label="Manual" />
+          <Tab icon={<SummarizeOutlined />} label="Summary" />
+        </Tabs>
 
-          {measureKeys.map((measureKey, index) => (
-            <TabPanel key={measureKey} value={activeTab} index={index}>
-              <Box sx={{ px: 3 }}>
-                <Typography variant="h5" sx={{ mb: 1 }}>
-                  {measureConfig[measureKey].label}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                  {measureConfig[measureKey].description}
-                </Typography>
-
-                <Box sx={{ mb: 4 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography variant="body2">Current Value</Typography>
-                    <Chip
-                      label={`${scores[measureKey]} - ${getZone(measureKey, scores[measureKey])?.label}`}
-                      size="small"
-                      sx={{
-                        bgcolor: getZone(measureKey, scores[measureKey])?.color,
-                        color: 'white',
-                      }}
-                    />
-                  </Box>
-                  <Slider
-                    value={scores[measureKey]}
-                    onChange={(_, value) => handleScoreChange(measureKey, value as number)}
-                    min={1}
-                    max={99}
-                    marks={measureKey === 'tree' ? [
-                      { value: 1, label: '1' },
-                      { value: 6, label: '6' },
-                      { value: 12, label: '12' },
-                      { value: 25, label: '25' },
-                      { value: 37, label: '37' },
-                      { value: 50, label: '50' },
-                      { value: 62, label: '62' },
-                      { value: 75, label: '75' },
-                      { value: 87, label: '87' },
-                      { value: 99, label: '99' },
-                    ] : [
-                      { value: 1, label: '1' },
-                      { value: 25, label: '25' },
-                      { value: 50, label: '50' },
-                      { value: 75, label: '75' },
-                      { value: 99, label: '99' },
-                    ]}
-                    valueLabelDisplay="auto"
+        {/* Questions Tab */}
+        <TabPanel value={activeTab} index={0}>
+          <Box sx={{ px: 3 }}>
+            <Box sx={{ mb: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Typography variant="h6">Answer All Questions</Typography>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Question {Math.min(currentQuestionIndex + 1, randomizedQuestions.length)} of {randomizedQuestions.length}
+                  </Typography>
+                  <Chip 
+                    label={`${questionResponses.size} answered`} 
+                    color={questionResponses.size === randomizedQuestions.length ? "success" : "default"}
+                    size="small"
                   />
                 </Box>
-
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Zones
-                </Typography>
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-                  {measureKey === 'tree' ? (
-                    <>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #7DA589`,
-                          opacity: (scores.tree >= 1 && scores.tree <= 6) || (scores.tree >= 88 && scores.tree <= 99) ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Leaf-Root
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 1-6, 88-99
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #8B4789`,
-                          opacity: scores.tree >= 7 && scores.tree <= 12 ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Root
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 7-12
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #8B5768`,
-                          opacity: scores.tree >= 13 && scores.tree <= 25 ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Root-Trunk
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 13-25
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #8B6B47`,
-                          opacity: scores.tree >= 26 && scores.tree <= 37 ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Trunk
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 26-37
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #6A7550`,
-                          opacity: scores.tree >= 38 && scores.tree <= 50 ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Trunk-Branch
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 38-50
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #4A7C59`,
-                          opacity: scores.tree >= 51 && scores.tree <= 62 ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Branch
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 51-62
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #6CA074`,
-                          opacity: scores.tree >= 63 && scores.tree <= 75 ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Branch-Leaf
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 63-75
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                      <Card
-                        sx={{
-                          borderLeft: `4px solid #8FBC8F`,
-                          opacity: scores.tree >= 76 && scores.tree <= 87 ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            Leaf
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: 76-87
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </>
-                  ) : (
-                    measureConfig[measureKey].zones.map((zone) => (
-                      <Card
-                        key={zone.label}
-                        sx={{
-                          borderLeft: `4px solid ${zone.color}`,
-                          opacity: scores[measureKey] >= zone.min && scores[measureKey] <= zone.max ? 1 : 0.5,
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            {zone.label}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Range: {zone.min}-{zone.max}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    ))
-                  )}
-                </Box>
               </Box>
-            </TabPanel>
-          ))}
-
-          {/* Summary Tab */}
-          <TabPanel value={activeTab} index={measureKeys.length}>
-            <Box sx={{ px: 3 }}>
-              <Typography variant="h5" sx={{ mb: 3 }}>
-                Your Profile Summary
-              </Typography>
-
-              {/* Scores Overview */}
-              <Box sx={{ mb: 4, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>Current Scores</Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                  {measureKeys.map((key) => (
-                    <Chip
-                      key={key}
-                      label={`${measureConfig[key].label}: ${scores[key]} (${getZone(key, scores[key])?.label})`}
-                      sx={{
-                        bgcolor: getZone(key, scores[key])?.color,
-                        color: 'white',
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-
-              {/* Text Summary */}
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Your Wiring Description
-              </Typography>
-              
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="body1" paragraph>
-                  <strong>Motivation (Tree):</strong>{' '}
-                  {(() => {
-                    const zone = getZone('tree', scores.tree);
-                    const label = zone?.label || 'Root';
-                    const cleanLabel = label.includes('Leaf-Root') ? 'Leaf-Root' : label;
-                    return measureDescriptions.tree[cleanLabel as keyof typeof measureDescriptions.tree] || 'You are motivated by growth and change.';
-                  })()}
-                </Typography>
-
-                <Typography variant="body1" paragraph>
-                  <strong>Decision Trust (Bucket Level):</strong>{' '}
-                  {measureDescriptions.bucketLevel[(getZone('bucketLevel', scores.bucketLevel)?.label || 'Balanced') as keyof typeof measureDescriptions.bucketLevel]}
-                </Typography>
-
-                <Typography variant="body1" paragraph>
-                  <strong>Resilience (Bucket Thickness):</strong>{' '}
-                  {measureDescriptions.bucketThickness[(getZone('bucketThickness', scores.bucketThickness)?.label || 'Moderate') as keyof typeof measureDescriptions.bucketThickness]}
-                </Typography>
-
-                <Typography variant="body1" paragraph>
-                  <strong>Learning Style (Input Pipe):</strong>{' '}
-                  {measureDescriptions.inputPipe[(getZone('inputPipe', scores.inputPipe)?.label || 'Moderate') as keyof typeof measureDescriptions.inputPipe]}
-                </Typography>
-
-                <Typography variant="body1" paragraph>
-                  <strong>Sharing Style (Output Pipe):</strong>{' '}
-                  {measureDescriptions.outputPipe[(getZone('outputPipe', scores.outputPipe)?.label || 'Moderate') as keyof typeof measureDescriptions.outputPipe]}
-                </Typography>
-              </Box>
-
-              {/* Combined Insight */}
-              <Paper sx={{ p: 3, bgcolor: 'primary.main', color: 'white' }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Integrated Profile
-                </Typography>
-                <Typography variant="body1">
-                  Your unique combination shows someone who{' '}
-                  {scores.tree <= 50 ? 'values relationships and systems' : 'seeks impact and innovation'},
-                  {' '}with{' '}
-                  {scores.bucketLevel <= 50 ? 'data-driven' : 'intuitive'} decision-making that is{' '}
-                  {scores.bucketThickness <= 50 ? 'adaptable' : 'steadfast'}.
-                  You prefer{' '}
-                  {scores.inputPipe <= 50 ? 'quick action' : 'thorough research'} and tend to{' '}
-                  {scores.outputPipe <= 50 ? 'process internally' : 'share openly'}.
-                </Typography>
-              </Paper>
+              <LinearProgress variant="determinate" value={progress} />
             </Box>
-          </TabPanel>
-        </Paper>
-      )}
 
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
-        <Button variant="outlined" startIcon={<SaveOutlined />}>
-          Save Draft
-        </Button>
-        <Button variant="contained" startIcon={<CalculateOutlined />} size="large" onClick={handleCalculate}>
-          Calculate Results
-        </Button>
-      </Box>
+            {progress === 100 ? (
+              <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography variant="h6" color="success.main" sx={{ mb: 2 }}>
+                  All questions completed!
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleCalculateFromQuestions}
+                    startIcon={<CalculateOutlined />}
+                  >
+                    Calculate Results
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={resetQuestions}
+                    startIcon={<RefreshOutlined />}
+                  >
+                    Reset Questions
+                  </Button>
+                </Box>
+              </Box>
+            ) : (
+              <Box>
+                <Card sx={{ mb: 3 }}>
+                  <CardContent>
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Typography variant="body1" sx={{ fontSize: '1.2rem', fontWeight: 500 }}>
+                        {randomizedQuestions[currentQuestionIndex].text}
+                      </Typography>
+                    </Box>
+                    
+                    {/* Current Score Display */}
+                    <Box sx={{ mt: 4 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Your Response
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                          <Typography variant="h5" color="primary" fontWeight="bold">
+                            {tempQuestionValue}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            / 99
+                          </Typography>
+                          {questionResponses.has(randomizedQuestions[currentQuestionIndex].id) && (
+                            <Chip 
+                              label={`Saved: ${questionResponses.get(randomizedQuestions[currentQuestionIndex].id)}`} 
+                              size="small" 
+                              color="success"
+                              sx={{ ml: 2 }}
+                            />
+                          )}
+                        </Box>
+                      </Box>
+                      
+                      <Slider
+                        value={tempQuestionValue}
+                        onChange={(_, value) => setTempQuestionValue(value as number)}
+                        min={questions.scale.min}
+                        max={questions.scale.max}
+                        marks={questions.scale.markers}
+                        valueLabelDisplay="auto"
+                        sx={{ mb: 4 }}
+                      />
+                      
+                      {/* Quick select buttons */}
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                        {questions.scale.markers.map((marker: any) => (
+                          <Button
+                            key={marker.value}
+                            variant={tempQuestionValue === marker.value ? "contained" : "outlined"}
+                            size="small"
+                            onClick={() => setTempQuestionValue(marker.value)}
+                            sx={{ minWidth: 'auto', px: 1 }}
+                          >
+                            <Box sx={{ textAlign: 'center' }}>
+                              <Typography variant="caption" display="block">
+                                {marker.value}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                                {marker.label}
+                              </Typography>
+                            </Box>
+                          </Button>
+                        ))}
+                      </Box>
+                      
+                      {/* Submit button */}
+                      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                        <Button
+                          variant="contained"
+                          size="large"
+                          onClick={() => {
+                            handleQuestionResponse(
+                              randomizedQuestions[currentQuestionIndex].id,
+                              tempQuestionValue
+                            );
+                            if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                              setCurrentQuestionIndex(currentQuestionIndex + 1);
+                              setTempQuestionValue(
+                                questionResponses.get(randomizedQuestions[currentQuestionIndex + 1].id) || 
+                                questions.scale.default
+                              );
+                            }
+                          }}
+                          sx={{ minWidth: 200 }}
+                        >
+                          Submit Answer
+                        </Button>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
 
+                {/* Navigation and Status */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Button
+                    disabled={currentQuestionIndex === 0}
+                    onClick={() => {
+                      const newIndex = currentQuestionIndex - 1;
+                      setCurrentQuestionIndex(newIndex);
+                      setTempQuestionValue(
+                        questionResponses.get(randomizedQuestions[newIndex].id) || questions.scale.default
+                      );
+                    }}
+                  >
+                    Previous
+                  </Button>
+                  
+                  {/* Question dots indicator */}
+                  <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    {[...Array(Math.min(10, randomizedQuestions.length))].map((_, i) => {
+                      const qIndex = i + Math.max(0, currentQuestionIndex - 4);
+                      if (qIndex >= randomizedQuestions.length) return null;
+                      return (
+                        <Box
+                          key={qIndex}
+                          sx={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: '50%',
+                            bgcolor: questionResponses.has(randomizedQuestions[qIndex].id) 
+                              ? 'success.main' 
+                              : qIndex === currentQuestionIndex 
+                              ? 'primary.main'
+                              : 'grey.300',
+                            cursor: 'pointer'
+                          }}
+                          onClick={() => {
+                            setCurrentQuestionIndex(qIndex);
+                            setTempQuestionValue(
+                              questionResponses.get(randomizedQuestions[qIndex].id) || questions.scale.default
+                            );
+                          }}
+                        />
+                      );
+                    })}
+                  </Box>
+                  
+                  <Button
+                    disabled={currentQuestionIndex >= randomizedQuestions.length - 1}
+                    onClick={() => {
+                      if (currentQuestionIndex < randomizedQuestions.length - 1) {
+                        const newIndex = currentQuestionIndex + 1;
+                        setCurrentQuestionIndex(newIndex);
+                        setTempQuestionValue(
+                          questionResponses.get(randomizedQuestions[newIndex].id) || questions.scale.default
+                        );
+                      }
+                    }}
+                  >
+                    Skip
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        </TabPanel>
+
+        {/* Manual Override Tab */}
+        <TabPanel value={activeTab} index={1}>
+          <Box sx={{ px: 3 }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>
+              Manual Score Override
+            </Typography>
+            <Alert severity="info" sx={{ mb: 3 }}>
+              Directly set your scores on each measure (1-99 scale)
+            </Alert>
+
+            <Grid container spacing={4}>
+              {/* Tree */}
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                  Tree (Motivation)
+                </Typography>
+                <Slider
+                  value={manualScores.tree}
+                  onChange={(_, value) => handleManualScoreChange('tree', value as number)}
+                  min={1}
+                  max={99}
+                  marks={[
+                    { value: 1, label: 'Root' },
+                    { value: 25, label: 'Trunk' },
+                    { value: 50, label: 'Branch' },
+                    { value: 75, label: 'Leaf' },
+                    { value: 99, label: '' }
+                  ]}
+                  valueLabelDisplay="on"
+                />
+              </Grid>
+
+              {/* Bucket */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                  Bucket (Capacity)
+                </Typography>
+                <Slider
+                  value={manualScores.bucket}
+                  onChange={(_, value) => handleManualScoreChange('bucket', value as number)}
+                  min={1}
+                  max={99}
+                  valueLabelDisplay="on"
+                />
+              </Grid>
+
+              {/* Thickness */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                  Thickness (Boundaries)
+                </Typography>
+                <Slider
+                  value={manualScores.thickness}
+                  onChange={(_, value) => handleManualScoreChange('thickness', value as number)}
+                  min={1}
+                  max={99}
+                  valueLabelDisplay="on"
+                />
+              </Grid>
+
+              {/* Input */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                  Input (Learning)
+                </Typography>
+                <Slider
+                  value={manualScores.input}
+                  onChange={(_, value) => handleManualScoreChange('input', value as number)}
+                  min={1}
+                  max={99}
+                  valueLabelDisplay="on"
+                />
+              </Grid>
+
+              {/* Output */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                  Output (Expression)
+                </Typography>
+                <Slider
+                  value={manualScores.output}
+                  onChange={(_, value) => handleManualScoreChange('output', value as number)}
+                  min={1}
+                  max={99}
+                  valueLabelDisplay="on"
+                />
+              </Grid>
+            </Grid>
+
+            <Box sx={{ mt: 4, textAlign: 'center' }}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => {
+                  setScoreSource('manual');
+                  setActiveTab(2);
+                }}
+              >
+                View Summary
+              </Button>
+            </Box>
+          </Box>
+        </TabPanel>
+
+        {/* Summary Tab */}
+        <TabPanel value={activeTab} index={2}>
+          <Box sx={{ px: 3 }}>
+            <Typography variant="h5" sx={{ mb: 3 }}>
+              Your TBAP Profile
+            </Typography>
+
+            {/* Tree Compass Visualization */}
+            {typeof finalScores.tree === 'object' && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Tree Position
+                </Typography>
+                <TreeCompass
+                  score={finalScores.tree.score}
+                  strength={finalScores.tree.strength}
+                  subtype={finalScores.tree.subtype}
+                />
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                  <Chip
+                    label={`${finalScores.tree.subtypeName} (Position: ${finalScores.tree.score})`}
+                    color="primary"
+                    sx={{ mr: 1 }}
+                  />
+                  <Chip
+                    label={getStrengthDescription(finalScores.tree.strength).label}
+                    variant="outlined"
+                  />
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
+                  {getStrengthDescription(finalScores.tree.strength).description}
+                </Typography>
+              </Box>
+            )}
+
+            {/* All Scores */}
+            <Box sx={{ mb: 4, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>Five Measures</Typography>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="body2" color="text.secondary">Tree</Typography>
+                  <Typography variant="h6">
+                    {typeof finalScores.tree === 'object' ? finalScores.tree.score : finalScores.tree}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 6, md: 3 }}>
+                  <Typography variant="body2" color="text.secondary">Bucket</Typography>
+                  <Typography variant="h6">{finalScores.bucket}</Typography>
+                </Grid>
+                <Grid size={{ xs: 6, md: 3 }}>
+                  <Typography variant="body2" color="text.secondary">Thickness</Typography>
+                  <Typography variant="h6">{finalScores.thickness}</Typography>
+                </Grid>
+                <Grid size={{ xs: 6, md: 3 }}>
+                  <Typography variant="body2" color="text.secondary">Input</Typography>
+                  <Typography variant="h6">{finalScores.input}</Typography>
+                </Grid>
+                <Grid size={{ xs: 6, md: 3 }}>
+                  <Typography variant="body2" color="text.secondary">Output</Typography>
+                  <Typography variant="h6">{finalScores.output}</Typography>
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* Interaction Archetype */}
+            <Paper sx={{ p: 3, mb: 4, bgcolor: 'primary.main', color: 'white' }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Interaction Archetype: {interactionArchetype.archetypeName}
+              </Typography>
+              <Typography variant="body1">
+                {interactionArchetype.description}
+              </Typography>
+              <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                <Chip
+                  label={`${interactionArchetype.orientation} oriented`}
+                  sx={{ bgcolor: 'white', color: 'primary.main' }}
+                />
+                <Chip
+                  label={`${interactionArchetype.expression} expression`}
+                  sx={{ bgcolor: 'white', color: 'primary.main' }}
+                />
+              </Box>
+            </Paper>
+
+            {/* Descriptions */}
+            <Box sx={{ mb: 3 }}>
+              {typeof finalScores.tree === 'object' && (
+                <Typography variant="body1" paragraph>
+                  <strong>Tree:</strong> {
+                    descriptions.treeSubtypes[
+                      finalScores.tree.subtype as keyof typeof descriptions.treeSubtypes
+                    ]?.description
+                  }
+                </Typography>
+              )}
+              <Typography variant="body1" paragraph>
+                <strong>Bucket:</strong> {getMeasureDescription('bucket', finalScores.bucket)}
+              </Typography>
+              <Typography variant="body1" paragraph>
+                <strong>Thickness:</strong> {getMeasureDescription('thickness', finalScores.thickness)}
+              </Typography>
+              <Typography variant="body1" paragraph>
+                <strong>Input:</strong> {getMeasureDescription('input', finalScores.input)}
+              </Typography>
+              <Typography variant="body1" paragraph>
+                <strong>Output:</strong> {getMeasureDescription('output', finalScores.output)}
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleSaveResults}
+                startIcon={<SaveOutlined />}
+              >
+                Save & View Analytics
+              </Button>
+            </Box>
+          </Box>
+        </TabPanel>
+      </Paper>
     </Box>
   );
 }
