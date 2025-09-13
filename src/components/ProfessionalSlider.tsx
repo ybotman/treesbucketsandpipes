@@ -2,29 +2,24 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
+import type { MeasureData } from '@/types/measures';
 
 interface ProfessionalSliderProps {
-  label: string;
+  measureData: MeasureData;
   value: number;
   onChange: (value: number) => void;
   min?: number;
   max?: number;
   color?: string;
-  description?: string;
-  leftLabel?: string;
-  rightLabel?: string;
 }
 
 export default function ProfessionalSlider({
-  label,
+  measureData,
   value,
   onChange,
   min = 1,
   max = 100,
-  color = '#4A7C59',
-  description,
-  leftLabel,
-  rightLabel
+  color = '#4A7C59'
 }: ProfessionalSliderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [localValue, setLocalValue] = useState(value);
@@ -93,39 +88,6 @@ export default function ProfessionalSlider({
 
   const percentage = ((localValue - min) / (max - min)) * 100;
 
-  // Get range bands for each measure type
-  const getRangeBands = () => {
-    if (label.includes('Bucket')) {
-      return [
-        { range: '1-30', label: 'External Resources', desc: 'Rely on data, experts, perspectives' },
-        { range: '31-70', label: 'Balanced', desc: 'Mix of external and internal' },
-        { range: '71-100', label: 'Inner Knowing', desc: 'Trust intuition and inner sense' }
-      ];
-    }
-    if (label.includes('Thickness')) {
-      return [
-        { range: '1-30', label: 'Flexible', desc: 'Quick to integrate new truths' },
-        { range: '31-70', label: 'Moderate', desc: 'Balanced reassessment' },
-        { range: '71-100', label: 'Persistent', desc: 'Hold truths until strong evidence' }
-      ];
-    }
-    if (label.includes('Input')) {
-      return [
-        { range: '1-30', label: 'Quick Integration', desc: 'Change with little information' },
-        { range: '31-70', label: 'Moderate Gathering', desc: 'Balanced information seeking' },
-        { range: '71-100', label: 'Wide Research', desc: 'Multiple perspectives before changing' }
-      ];
-    }
-    if (label.includes('Output')) {
-      return [
-        { range: '1-30', label: 'Internal', desc: 'Keep knowledge private' },
-        { range: '31-70', label: 'Selective', desc: 'Share when appropriate' },
-        { range: '71-100', label: 'Broadcast', desc: 'Eager to share and teach' }
-      ];
-    }
-    return [];
-  };
-
   return (
     <Box sx={{
       width: '100%',
@@ -138,13 +100,11 @@ export default function ProfessionalSlider({
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 0.5 }}>
-          {label}
+          {measureData.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measureData.altName})</span>
         </Typography>
-        {description && (
-          <Typography variant="body2" sx={{ color: '#666' }}>
-            {description}
-          </Typography>
-        )}
+        <Typography variant="body2" sx={{ color: '#666' }}>
+          {measureData.shortDescription}
+        </Typography>
       </Box>
 
       {/* Slider Container */}
@@ -251,10 +211,10 @@ export default function ProfessionalSlider({
           px: 2
         }}>
           <Typography variant="caption" sx={{ color: '#999' }}>
-            {leftLabel || min}
+            {measureData.scaleLabels.left}
           </Typography>
           <Typography variant="caption" sx={{ color: '#999' }}>
-            {rightLabel || max}
+            {measureData.scaleLabels.right}
           </Typography>
         </Box>
       </Box>
@@ -262,60 +222,53 @@ export default function ProfessionalSlider({
       {/* Range Bands */}
       <Box sx={{ mt: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
-          {getRangeBands().map((band, index) => (
-            <Box
-              key={index}
-              sx={{
-                flex: 1,
-                p: 1.5,
-                bgcolor: localValue >= parseInt(band.range.split('-')[0]) &&
-                         localValue <= parseInt(band.range.split('-')[1])
-                         ? `${color}15` : 'transparent',
-                border: localValue >= parseInt(band.range.split('-')[0]) &&
-                        localValue <= parseInt(band.range.split('-')[1])
-                        ? `2px solid ${color}` : '1px solid #e0e0e0',
-                borderRadius: 1,
-                transition: 'all 0.3s ease'
-              }}
-            >
-              <Typography
-                variant="caption"
+          {measureData.bands.map((band) => {
+            const isActive = localValue >= band.range[0] && localValue <= band.range[1];
+            return (
+              <Box
+                key={band.id}
                 sx={{
-                  display: 'block',
-                  fontWeight: 'bold',
-                  color: localValue >= parseInt(band.range.split('-')[0]) &&
-                         localValue <= parseInt(band.range.split('-')[1])
-                         ? color : '#666',
-                  mb: 0.5
+                  flex: 1,
+                  p: 1.5,
+                  bgcolor: isActive ? band.color : 'transparent',
+                  border: isActive ? `2px solid ${color}` : '1px solid #e0e0e0',
+                  borderRadius: 1,
+                  transition: 'all 0.3s ease'
                 }}
               >
-                {band.range}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: localValue >= parseInt(band.range.split('-')[0]) &&
-                              localValue <= parseInt(band.range.split('-')[1])
-                              ? 'bold' : 'normal',
-                  color: localValue >= parseInt(band.range.split('-')[0]) &&
-                         localValue <= parseInt(band.range.split('-')[1])
-                         ? '#333' : '#666',
-                  mb: 0.5
-                }}
-              >
-                {band.label}
-              </Typography>
-              <Typography
-                variant="caption"
-                sx={{
-                  color: '#999',
-                  fontSize: '0.75rem'
-                }}
-              >
-                {band.desc}
-              </Typography>
-            </Box>
-          ))}
+                <Typography
+                  variant="caption"
+                  sx={{
+                    display: 'block',
+                    fontWeight: 'bold',
+                    color: isActive ? color : '#666',
+                    mb: 0.5
+                  }}
+                >
+                  {band.rangeLabel}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: isActive ? 'bold' : 'normal',
+                    color: isActive ? '#333' : '#666',
+                    mb: 0.5
+                  }}
+                >
+                  {band.title}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: '#999',
+                    fontSize: '0.75rem'
+                  }}
+                >
+                  {band.shortDesc}
+                </Typography>
+              </Box>
+            );
+          })}
         </Box>
       </Box>
     </Box>

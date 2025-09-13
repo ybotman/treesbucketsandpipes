@@ -33,6 +33,10 @@ import {
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
 import descriptions from '@/data/descriptions.json';
+import measuresDataRaw from '@/data/measures_complete.json';
+import type { MeasuresComplete } from '@/types/measures';
+
+const measuresData = measuresDataRaw as unknown as MeasuresComplete;
 import {
   processQuestionResponses,
   calculateInteractionArchetype,
@@ -481,75 +485,169 @@ export default function AssessPage() {
             <Typography variant="h6" sx={{ mb: 3 }}>
               Manual Score Override
             </Typography>
-            <Alert severity="info" sx={{ mb: 3 }}>
-              Directly set your scores on each measure (1-99 scale)
-            </Alert>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {/* Tree - Circular Dial */}
-              <Box>
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', textAlign: 'center' }}>
-                  Tree (Motivation for Change)
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
-                  What drives you to act and change
-                </Typography>
-                <CircularSlider
-                  value={manualScores.tree}
-                  onChange={(value) => handleManualScoreChange('tree', value)}
-                />
+              {/* Tree - Circular Dial with new styling */}
+              <Box sx={{
+                width: '100%',
+                p: 3,
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                borderRadius: 3,
+                boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+              }}>
+                {/* Header */}
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 0.5 }}>
+                    {measuresData.tree.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measuresData.tree.altName})</span>
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#666' }}>
+                    {measuresData.tree.shortDescription}
+                  </Typography>
+                </Box>
+
+                {/* Main content area with compass and description */}
+                <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
+                  {/* Left side - Compass with controls below */}
+                  <Box sx={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <CircularSlider
+                      value={manualScores.tree}
+                      onChange={(value) => handleManualScoreChange('tree', value)}
+                    />
+
+                    {/* Controls below compass */}
+                    <Box sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      mt: 2
+                    }}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => {
+                          // Wrap from 1 to 100
+                          const newValue = manualScores.tree === 1 ? 100 : manualScores.tree - 1;
+                          handleManualScoreChange('tree', newValue);
+                        }}
+                        sx={{ minWidth: 40 }}
+                      >
+                        -
+                      </Button>
+                      <input
+                        type="number"
+                        value={manualScores.tree}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 1;
+                          const clampedVal = Math.max(1, Math.min(100, val));
+                          handleManualScoreChange('tree', clampedVal);
+                        }}
+                        style={{
+                          width: '60px',
+                          padding: '6px 12px',
+                          textAlign: 'center',
+                          border: '1px solid #e0e0e0',
+                          borderRadius: '4px',
+                          fontSize: '14px',
+                          backgroundColor: 'white'
+                        }}
+                        min="1"
+                        max="100"
+                      />
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => {
+                          // Wrap from 100 to 1
+                          const newValue = manualScores.tree === 100 ? 1 : manualScores.tree + 1;
+                          handleManualScoreChange('tree', newValue);
+                        }}
+                        sx={{ minWidth: 40 }}
+                      >
+                        +
+                      </Button>
+                    </Box>
+                  </Box>
+
+                  {/* Right side - Type description */}
+                  <Box sx={{ flex: 1 }}>
+                    <Box sx={{
+                      p: 2,
+                      bgcolor: 'rgba(74, 124, 89, 0.05)',
+                      borderRadius: 2,
+                      border: '2px solid #4A7C59'
+                    }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#4A7C59', mb: 1 }}>
+                        {(() => {
+                          const treeValue = manualScores.tree;
+                          // Match the logic from CircularSlider
+                          if (treeValue <= 6.25 || treeValue > 93.75) return 'Root-Leaf';
+                          if (treeValue <= 18.75) return 'Root';
+                          if (treeValue <= 31.25) return 'Root-Trunk';
+                          if (treeValue <= 43.75) return 'Trunk';
+                          if (treeValue <= 56.25) return 'Trunk-Branch';
+                          if (treeValue <= 68.75) return 'Branch';
+                          if (treeValue <= 81.25) return 'Branch-Leaf';
+                          if (treeValue <= 93.75) return 'Leaf';
+                          return 'Root-Leaf';
+                        })()}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#555' }}>
+                        {(() => {
+                          const treeValue = manualScores.tree;
+                          // Get the matching subtype description from the JSON
+                          const subtype = measuresData.tree.subtypes.find(st => {
+                            if (st.id === 'root_leaf') {
+                              return (treeValue >= st.range[0] && treeValue <= st.range[1]) ||
+                                     (st.altRange && treeValue >= st.altRange[0] && treeValue <= st.altRange[1]);
+                            }
+                            return treeValue >= st.range[0] && treeValue <= st.range[1];
+                          });
+                          return subtype?.description || '';
+                        })()}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
               </Box>
 
               {/* Bucket */}
               <ProfessionalSlider
-                label="Bucket (Gut / Confidence)"
-                description="How much you rely on your inner sense of knowing vs. external sources"
+                measureData={measuresData.measures.bucket}
                 value={manualScores.bucket}
                 onChange={(value) => handleManualScoreChange('bucket', value)}
                 min={1}
                 max={100}
                 color="#5B8BA0"
-                leftLabel="External"
-                rightLabel="Internal"
               />
 
               {/* Thickness */}
               <ProfessionalSlider
-                label="Bucket Thickness (Reassessment)"
-                description="How easily you reassess what you know when contradictions appear"
+                measureData={measuresData.measures.thickness}
                 value={manualScores.thickness}
                 onChange={(value) => handleManualScoreChange('thickness', value)}
                 min={1}
                 max={100}
                 color="#7BA098"
-                leftLabel="Thin"
-                rightLabel="Thick"
               />
 
               {/* Input */}
               <ProfessionalSlider
-                label="Input Pipe (Learning / Gathering)"
-                description="How much outside information you prefer before updating your bucket"
+                measureData={measuresData.measures.input}
                 value={manualScores.input}
                 onChange={(value) => handleManualScoreChange('input', value)}
                 min={1}
                 max={100}
                 color="#8B6B47"
-                leftLabel="Low"
-                rightLabel="High"
               />
 
               {/* Output */}
               <ProfessionalSlider
-                label="Output Pipe (Sharing / Teaching)"
-                description="How strongly you feel the need to share what you know"
+                measureData={measuresData.measures.output}
                 value={manualScores.output}
                 onChange={(value) => handleManualScoreChange('output', value)}
                 min={1}
                 max={100}
                 color="#A08B47"
-                leftLabel="Low"
-                rightLabel="High"
               />
             </Box>
 

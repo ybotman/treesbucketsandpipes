@@ -349,10 +349,6 @@ export default function CircularSlider({
           {getSubtypeLabel(value)}
         </text>
       </svg>
-
-      <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-        Click or drag the dial to set your Tree score
-      </Typography>
     </Box>
   );
 }
