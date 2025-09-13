@@ -506,7 +506,7 @@ export default function AssessPage() {
                 </Box>
 
                 {/* Main content area with compass and description */}
-                <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
+                <Box sx={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                   {/* Left side - Compass with controls below */}
                   <Box sx={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <CircularSlider
@@ -514,12 +514,12 @@ export default function AssessPage() {
                       onChange={(value) => handleManualScoreChange('tree', value)}
                     />
 
-                    {/* Controls below compass */}
+                    {/* Controls below compass - much closer */}
                     <Box sx={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: 1,
-                      mt: 2
+                      mt: -1  // Negative margin to bring controls closer
                     }}>
                       <Button
                         variant="outlined"
