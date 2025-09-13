@@ -510,70 +510,127 @@ export default function AssessPage() {
                 </Box>
 
                 {/* Main content area with compass and description */}
-                <Box sx={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                  {/* Left side - Compass with controls below */}
-                  <Box sx={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <CircularSlider
-                      value={manualScores.tree}
-                      onChange={(value) => handleManualScoreChange('tree', value)}
-                    />
-
-                    {/* Controls below compass - much closer */}
+                <Box sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', md: 'row' },
+                  gap: 4,
+                  alignItems: 'center'
+                }}>
+                  {/* Compass with controls */}
+                  <Box sx={{
+                    flex: { xs: '1 1 auto', md: '0 0 auto' },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    width: { xs: '100%', md: 'auto' },
+                    position: 'relative'
+                  }}>
+                    {/* Controls at top - on either side of label */}
                     <Box sx={{
+                      position: 'absolute',
+                      top: 10,
+                      left: 0,
+                      right: 0,
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       gap: 1,
-                      mt: -1  // Negative margin to bring controls closer
+                      zIndex: 10
                     }}>
                       <Button
                         variant="outlined"
                         size="small"
                         onClick={() => {
-                          // Wrap from 1 to 100
-                          const newValue = manualScores.tree === 1 ? 100 : manualScores.tree - 1;
+                          // Move 11 points back (roughly one subtype)
+                          let newValue = manualScores.tree - 11;
+                          if (newValue < 1) newValue = 100 + newValue; // Wrap around
                           handleManualScoreChange('tree', newValue);
                         }}
-                        sx={{ minWidth: 40 }}
+                        sx={{
+                          minWidth: 40,
+                          height: 32,
+                          borderRadius: 2,
+                          p: 0,
+                          fontSize: '14px'
+                        }}
                       >
-                        -
+                        --
                       </Button>
-                      <input
-                        type="number"
-                        value={manualScores.tree}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value) || 1;
-                          const clampedVal = Math.max(1, Math.min(100, val));
-                          handleManualScoreChange('tree', clampedVal);
-                        }}
-                        style={{
-                          width: '60px',
-                          padding: '6px 12px',
-                          textAlign: 'center',
-                          border: '1px solid #e0e0e0',
-                          borderRadius: '4px',
-                          fontSize: '14px',
-                          backgroundColor: 'white'
-                        }}
-                        min="1"
-                        max="100"
-                      />
+
                       <Button
                         variant="outlined"
                         size="small"
                         onClick={() => {
-                          // Wrap from 100 to 1
+                          // Move 1 point back
+                          const newValue = manualScores.tree === 1 ? 100 : manualScores.tree - 1;
+                          handleManualScoreChange('tree', newValue);
+                        }}
+                        sx={{
+                          minWidth: 32,
+                          height: 32,
+                          borderRadius: 2,
+                          p: 0,
+                          fontSize: '16px'
+                        }}
+                      >
+                        -
+                      </Button>
+
+                      {/* Label in middle - gets rendered by CircularSlider */}
+                      <Box sx={{ width: 120, textAlign: 'center' }} />
+
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => {
+                          // Move 1 point forward
                           const newValue = manualScores.tree === 100 ? 1 : manualScores.tree + 1;
                           handleManualScoreChange('tree', newValue);
                         }}
-                        sx={{ minWidth: 40 }}
+                        sx={{
+                          minWidth: 32,
+                          height: 32,
+                          borderRadius: 2,
+                          p: 0,
+                          fontSize: '16px'
+                        }}
                       >
                         +
                       </Button>
+
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => {
+                          // Move 11 points forward (roughly one subtype)
+                          let newValue = manualScores.tree + 11;
+                          if (newValue > 100) newValue = newValue - 100; // Wrap around
+                          handleManualScoreChange('tree', newValue);
+                        }}
+                        sx={{
+                          minWidth: 40,
+                          height: 32,
+                          borderRadius: 2,
+                          p: 0,
+                          fontSize: '14px'
+                        }}
+                      >
+                        ++
+                      </Button>
                     </Box>
+
+                    <CircularSlider
+                      value={manualScores.tree}
+                      onChange={(value) => handleManualScoreChange('tree', value)}
+                    />
                   </Box>
 
-                  {/* Right side - Type description */}
-                  <Box sx={{ flex: 1 }}>
+                  {/* Type description - below on mobile, right side on desktop */}
+                  <Box sx={{
+                    flex: 1,
+                    width: { xs: '100%', md: 'auto' },
+                    maxWidth: { xs: '100%', md: '500px' }
+                  }}>
                     <Box sx={{
                       p: 2,
                       bgcolor: 'rgba(74, 124, 89, 0.05)',
