@@ -47,12 +47,38 @@
           "fullDesc": "You rely heavily on your internal compass and instincts. You trust your gut feelings above external opinions and act with conviction. Your strength is decisive action and self-trust.",
           "color": "#A2D4E2"
         }
+      ],
+      "altBands": [
+        {
+          "range": [1, 24],
+          "rangeLabel": "1-24",
+          "title": "Cautious Gut",
+          "description": "You lean on outside input before deciding. Your gift is thoroughness and humility."
+        },
+        {
+          "range": [25, 49],
+          "rangeLabel": "25-49",
+          "title": "Balanced Gut",
+          "description": "You weigh your instincts against evidence. You bring measured judgment and clarity."
+        },
+        {
+          "range": [50, 74],
+          "rangeLabel": "50-74",
+          "title": "Confident Gut",
+          "description": "You trust your inner compass in most situations. You move forward with assurance, inspiring others with decisiveness."
+        },
+        {
+          "range": [75, 100],
+          "rangeLabel": "75-100",
+          "title": "Intuitive Gut",
+          "description": "You rely strongly on your gut, moving quickly and boldly. Your strength is conviction and speed."
+        }
       ]
     },
     "thickness": {
       "displayName": "Bucket Thickness",
-      "altName": "Trust / Reassessment",
-      "shortDescription": "How easily you reassess what you know when contradictions appear",
+      "altName": "Persistence to Reassessment",
+      "shortDescription": "The strength to which you hold on to what you know, when contradictions appear",
       "fullDescription": "Thickness measures how firmly you hold your truths under pressure. It reflects your willingness to change core beliefs when presented with contradictory evidence.",
       "userLabel": "Your Flexibility",
       "scaleLabels": {
@@ -86,6 +112,32 @@
           "shortDesc": "Hold truths until strong evidence",
           "fullDesc": "You maintain your core truths despite challenges. It takes significant evidence to change your fundamental beliefs. Your strength is consistency and reliability.",
           "color": "#D2E8BA"
+        }
+      ],
+      "altBands": [
+        {
+          "range": [1, 24],
+          "rangeLabel": "1-24",
+          "title": "Permeable Walls",
+          "description": "You adjust quickly when proven wrong. Your strength is adaptability and openness."
+        },
+        {
+          "range": [25, 49],
+          "rangeLabel": "25-49",
+          "title": "Flexible Walls",
+          "description": "You hold some truths firmly but remain open to change. Your strength is balance."
+        },
+        {
+          "range": [50, 74],
+          "rangeLabel": "50-74",
+          "title": "Steady Walls",
+          "description": "You stay committed while allowing evidence to shift you over time. Your strength is persistence with wisdom."
+        },
+        {
+          "range": [75, 100],
+          "rangeLabel": "75-100",
+          "title": "Strong Walls",
+          "description": "You hold truths tightly, providing consistency and stability. Your strength is resilience and reliability."
         }
       ]
     },
@@ -127,6 +179,32 @@
           "fullDesc": "You extensively research and gather diverse perspectives before forming opinions. You value comprehensive understanding over quick action. Your strength is thoroughness and wisdom.",
           "color": "#FFDEB3"
         }
+      ],
+      "altBands": [
+        {
+          "range": [1, 24],
+          "rangeLabel": "1-24",
+          "title": "Action Learner",
+          "description": "You learn best by doing, testing, and discovering firsthand. Your strength is speed and courage."
+        },
+        {
+          "range": [25, 49],
+          "rangeLabel": "25-49",
+          "title": "Experiential Learner",
+          "description": "You balance action with select input. You know when to move and when to pause for perspective."
+        },
+        {
+          "range": [50, 74],
+          "rangeLabel": "50-74",
+          "title": "Inquisitive Learner",
+          "description": "You actively gather knowledge from multiple sources. Your strength is depth and preparedness."
+        },
+        {
+          "range": [75, 100],
+          "rangeLabel": "75-100",
+          "title": "Broad Collector",
+          "description": "You constantly seek information and perspectives. Your strength is curiosity and adaptability."
+        }
       ]
     },
     "output": {
@@ -167,86 +245,189 @@
           "fullDesc": "You actively share your knowledge and perspectives. You're energized by teaching and influencing others through communication. Your strength is inspiration and leadership.",
           "color": "#FFB3D9"
         }
+      ],
+      "altBands": [
+        {
+          "range": [1, 24],
+          "rangeLabel": "1-24",
+          "title": "Quiet Contributor",
+          "description": "You share sparingly, letting your presence speak. Your strength is calm influence and focus."
+        },
+        {
+          "range": [25, 49],
+          "rangeLabel": "25-49",
+          "title": "Selective Sharer",
+          "description": "You share when useful, adjusting to the moment. Your strength is discernment and timing."
+        },
+        {
+          "range": [50, 74],
+          "rangeLabel": "50-74",
+          "title": "Expressive Sharer",
+          "description": "You often share ideas to clarify and connect. Your strength is building trust and alignment."
+        },
+        {
+          "range": [75, 100],
+          "rangeLabel": "75-100",
+          "title": "Amplifier",
+          "description": "You broadcast boldly and widely. Your strength is visibility, persuasion, and inspiration."
+        }
+      ]
+    },
+    "tree": {
+      "displayName": "Tree",
+      "altName": "Core Motivation",
+      "shortDescription": "What fundamentally drives you - from harmony to mastery to impact to discovery",
+      "fullDescription": "The Tree represents your core motivation - what you're fundamentally wired to seek. It ranges from Root (harmony/belonging) through Trunk (mastery/growth) and Branch (impact/legacy) to Leaf (novelty/discovery).",
+      "userLabel": "Your Core Drive",
+      "scale": {
+        "min": 1,
+        "max": 100,
+        "circular": true
+      },
+      "subtypes": [
+        {
+          "id": "root_leaf",
+          "name": "Root-Leaf",
+          "displayName": ["Root/", "Leaf"],
+          "range": [1, 6.25],
+          "altRange": [93.75, 100],
+          "description": "Bridges exploration with connection. You seek new experiences that bring people together.",
+          "position": "bottom"
+        },
+        {
+          "id": "root",
+          "name": "Root",
+          "displayName": "Root",
+          "range": [6.25, 18.75],
+          "description": "Deep connection to community and harmony. You are motivated by belonging and creating safety.",
+          "position": "bottom-right"
+        },
+        {
+          "id": "root_trunk",
+          "name": "Root-Trunk",
+          "displayName": ["Root-", "Trunk"],
+          "range": [18.75, 31.25],
+          "description": "Balances connection with personal growth. You develop skills to better support others.",
+          "position": "right"
+        },
+        {
+          "id": "trunk",
+          "name": "Trunk",
+          "displayName": "Trunk",
+          "range": [31.25, 43.75],
+          "description": "Focused on mastery and self-improvement. You're driven by becoming more capable.",
+          "position": "top-right"
+        },
+        {
+          "id": "trunk_branch",
+          "name": "Trunk-Branch",
+          "displayName": ["Trunk-", "Branch"],
+          "range": [43.75, 56.25],
+          "description": "Combines personal mastery with system impact. You develop expertise to create change.",
+          "position": "top"
+        },
+        {
+          "id": "branch",
+          "name": "Branch",
+          "displayName": "Branch",
+          "range": [56.25, 68.75],
+          "description": "Driven by impact and contribution. You focus on creating lasting change.",
+          "position": "top-left"
+        },
+        {
+          "id": "branch_leaf",
+          "name": "Branch-Leaf",
+          "displayName": ["Branch-", "Leaf"],
+          "range": [68.75, 81.25],
+          "description": "Merges impact with exploration. You create change through innovation.",
+          "position": "left"
+        },
+        {
+          "id": "leaf",
+          "name": "Leaf",
+          "displayName": "Leaf",
+          "range": [81.25, 93.75],
+          "description": "Energized by novelty and discovery. You thrive on new experiences and variety.",
+          "position": "bottom-left"
+        }
+      ]
+    },
+    "engagement": {
+      "displayName": "Engagement Scale",
+      "altName": "First Reaction",
+      "shortDescription": "Your first-reaction orientation to acting solo vs. engaging people.",
+      "fullDescription": "A bell-curve (cosine-shaped) 1–100 scale derived from Tree orientation (Roots/Leaves → people-first; Trunks/Branches → solo-first). It captures your first reaction to engage: independent to collaborative.",
+      "userLabel": "How You Engage First",
+      "scale": { "min": 1, "max": 100, "shape": "bell-curve" },
+      "bands": [
+        {
+          "range": [1, 24],
+          "rangeLabel": "1-24",
+          "title": "Independent Start",
+          "description": "Your first instinct is to act solo. You begin with self-reliance, then connect later."
+        },
+        {
+          "range": [25, 49],
+          "rangeLabel": "25-49",
+          "title": "Solo-Grounded",
+          "description": "You anchor in your own strength and knowledge before widening outward. You bring steadiness to others."
+        },
+        {
+          "range": [50, 74],
+          "rangeLabel": "50-74",
+          "title": "Collaborative Driver",
+          "description": "You lean into group or team contexts, shaping outcomes together. You thrive in shared momentum."
+        },
+        {
+          "range": [75, 100],
+          "rangeLabel": "75-100",
+          "title": "People-First Engager",
+          "description": "Your first instinct is to connect with others. You find energy in immediate collaboration."
+        }
+      ]
+    },
+    "interaction": {
+      "displayName": "Interaction Archetypes",
+      "altName": "Tree × Output Grid",
+      "shortDescription": "Five archetypes from People vs. Fact (Tree) and Narrow vs. Wide (Output Pipe).",
+      "fullDescription": "A grid mapping Tree orientation (people-focused: Roots/Leaves; fact-focused: Trunks/Branches) against Output Pipe (narrow→wide). Includes a center integration type.",
+      "type": "grid",
+      "axes": {
+        "x": { "name": "Tree Orientation", "left": "People", "right": "Fact" },
+        "y": { "name": "Output Pipe", "bottom": "Narrow", "top": "Wide" }
+      },
+      "archetypes": [
+        {
+          "id": "harmonious_nurturer",
+          "title": "Harmonious Nurturer",
+          "quadrant": "People + Narrow",
+          "description": "Quietly relational, steady in belonging."
+        },
+        {
+          "id": "inspiring_connector",
+          "title": "Inspiring Connector",
+          "quadrant": "People + Wide",
+          "description": "Expressive, energizing, community-building."
+        },
+        {
+          "id": "grounded_analyst",
+          "title": "Grounded Analyst",
+          "quadrant": "Fact + Narrow",
+          "description": "Quietly precise, mastery-driven, dependable."
+        },
+        {
+          "id": "impactful_driver",
+          "title": "Impactful Driver",
+          "quadrant": "Fact + Wide",
+          "description": "Bold, persuasive, results-focused."
+        },
+        {
+          "id": "blended_origin",
+          "title": "Blended Origin",
+          "quadrant": "Center",
+          "description": "Flexible, adaptive, able to move between styles. Represents the 'middle bubble' of integration."
+        }
       ]
     }
-  },
-  "tree": {
-    "displayName": "Tree",
-    "altName": "Core Motivation",
-    "shortDescription": "What fundamentally drives you - from harmony to mastery to impact to discovery",
-    "fullDescription": "The Tree represents your core motivation - what you're fundamentally wired to seek. It ranges from Root (harmony/belonging) through Trunk (mastery/growth) and Branch (impact/legacy) to Leaf (novelty/discovery).",
-    "userLabel": "Your Core Drive",
-    "scale": {
-      "min": 1,
-      "max": 100,
-      "circular": true
-    },
-    "subtypes": [
-      {
-        "id": "root_leaf",
-        "name": "Root-Leaf",
-        "displayName": ["Root/", "Leaf"],
-        "range": [1, 6.25],
-        "altRange": [93.75, 100],
-        "description": "Bridges exploration with connection. You seek new experiences that bring people together.",
-        "position": "bottom"
-      },
-      {
-        "id": "root",
-        "name": "Root",
-        "displayName": "Root",
-        "range": [6.25, 18.75],
-        "description": "Deep connection to community and harmony. You are motivated by belonging and creating safety.",
-        "position": "bottom-right"
-      },
-      {
-        "id": "root_trunk",
-        "name": "Root-Trunk",
-        "displayName": ["Root-", "Trunk"],
-        "range": [18.75, 31.25],
-        "description": "Balances connection with personal growth. You develop skills to better support others.",
-        "position": "right"
-      },
-      {
-        "id": "trunk",
-        "name": "Trunk",
-        "displayName": "Trunk",
-        "range": [31.25, 43.75],
-        "description": "Focused on mastery and self-improvement. You're driven by becoming more capable.",
-        "position": "top-right"
-      },
-      {
-        "id": "trunk_branch",
-        "name": "Trunk-Branch",
-        "displayName": ["Trunk-", "Branch"],
-        "range": [43.75, 56.25],
-        "description": "Combines personal mastery with system impact. You develop expertise to create change.",
-        "position": "top"
-      },
-      {
-        "id": "branch",
-        "name": "Branch",
-        "displayName": "Branch",
-        "range": [56.25, 68.75],
-        "description": "Driven by impact and contribution. You focus on creating lasting change.",
-        "position": "top-left"
-      },
-      {
-        "id": "branch_leaf",
-        "name": "Branch-Leaf",
-        "displayName": ["Branch-", "Leaf"],
-        "range": [68.75, 81.25],
-        "description": "Merges impact with exploration. You create change through innovation.",
-        "position": "left"
-      },
-      {
-        "id": "leaf",
-        "name": "Leaf",
-        "displayName": "Leaf",
-        "range": [81.25, 93.75],
-        "description": "Energized by novelty and discovery. You thrive on new experiences and variety.",
-        "position": "bottom-left"
-      }
-    ]
   }
 }

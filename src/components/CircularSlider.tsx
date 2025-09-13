@@ -8,13 +8,15 @@ interface CircularSliderProps {
   onChange: (value: number) => void;
   min?: number;
   max?: number;
+  disabled?: boolean;
 }
 
 export default function CircularSlider({
   value,
   onChange,
   min = 1,
-  max = 100
+  max = 100,
+  disabled = false
 }: CircularSliderProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -62,6 +64,7 @@ export default function CircularSlider({
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (disabled) return;
     setIsDragging(true);
     handlePointerEvent(e.clientX, e.clientY);
   };
@@ -77,6 +80,7 @@ export default function CircularSlider({
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (disabled) return;
     setIsDragging(true);
     const touch = e.touches[0];
     handlePointerEvent(touch.clientX, touch.clientY);
@@ -149,7 +153,7 @@ export default function CircularSlider({
         width="400"
         height="400"
         viewBox="0 0 400 400"
-        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        style={{ cursor: disabled ? 'default' : (isDragging ? 'grabbing' : 'grab') }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >

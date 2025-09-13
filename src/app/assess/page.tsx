@@ -21,14 +21,15 @@ import {
   Alert,
   Switch,
 } from '@mui/material';
-import { 
-  QuizOutlined, 
-  TuneOutlined, 
-  SaveOutlined, 
+import {
+  QuizOutlined,
+  TuneOutlined,
+  SaveOutlined,
   CalculateOutlined,
   SummarizeOutlined,
   RefreshOutlined,
-  ClearOutlined
+  ClearOutlined,
+  AnalyticsOutlined
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
@@ -45,6 +46,7 @@ import {
 } from '@/lib/calculations';
 import TreeCompass from '@/components/TreeCompass';
 import MeasureGauge from '@/components/MeasureGauge';
+import EnhancedGauge from '@/components/EnhancedGauge';
 import CircularSlider from '@/components/CircularSlider';
 import ProfessionalSlider from '@/components/ProfessionalSlider';
 
@@ -218,6 +220,7 @@ export default function AssessPage() {
           <Tab icon={<QuizOutlined />} label="Questions" />
           <Tab icon={<TuneOutlined />} label="Manual" />
           <Tab icon={<SummarizeOutlined />} label="Summary" />
+          <Tab icon={<AnalyticsOutlined />} label="Analytics" />
         </Tabs>
 
         {/* Questions Tab */}
@@ -498,10 +501,10 @@ export default function AssessPage() {
                 {/* Header */}
                 <Box sx={{ mb: 3 }}>
                   <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 0.5 }}>
-                    {measuresData.tree.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measuresData.tree.altName})</span>
+                    {measuresData.measures.tree.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measuresData.measures.tree.altName})</span>
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#666' }}>
-                    {measuresData.tree.shortDescription}
+                    {measuresData.measures.tree.shortDescription}
                   </Typography>
                 </Box>
 
@@ -595,7 +598,7 @@ export default function AssessPage() {
                         {(() => {
                           const treeValue = manualScores.tree;
                           // Get the matching subtype description from the JSON
-                          const subtype = measuresData.tree.subtypes.find(st => {
+                          const subtype = measuresData.measures.tree.subtypes.find(st => {
                             if (st.id === 'root_leaf') {
                               return (treeValue >= st.range[0] && treeValue <= st.range[1]) ||
                                      (st.altRange && treeValue >= st.altRange[0] && treeValue <= st.altRange[1]);
@@ -668,7 +671,7 @@ export default function AssessPage() {
 
         {/* Summary Tab */}
         <TabPanel value={activeTab} index={2}>
-          <Box sx={{ px: 3 }}>
+          <Box sx={{ px: 3, maxWidth: 1200, mx: 'auto' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
               <Typography variant="h5">
                 Your TBAP Profile
@@ -691,69 +694,132 @@ export default function AssessPage() {
               </Box>
             </Box>
 
-            {/* Five Measures Visualization */}
-            <Paper sx={{ p: 3, mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, textAlign: 'center' }}>
-                Five Measures
-              </Typography>
-
-              {/* Tree Compass */}
-              {typeof finalScores.tree === 'object' && (
-                <Box sx={{ mb: 4 }}>
-                  <TreeCompass
-                    score={finalScores.tree.score}
-                    strength={finalScores.tree.strength}
-                    subtype={finalScores.tree.subtype}
-                  />
-                  <Box sx={{ textAlign: 'center', mt: 2 }}>
-                    <Typography variant="h6">
-                      Tree: {finalScores.tree.score}
-                    </Typography>
-                    <Chip
-                      label={`${finalScores.tree.subtypeName}`}
-                      color="primary"
-                      size="small"
+            {/* Motivation Compass Section */}
+            {typeof finalScores.tree === 'object' && (
+              <Box sx={{
+                width: '100%',
+                p: 3,
+                mb: 4,
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                borderRadius: 3,
+                boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+              }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 3, textAlign: 'center' }}>
+                  Motivation Compass
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+                  <Box>
+                    <CircularSlider
+                      value={typeof finalScores.tree === 'object' ? finalScores.tree.score : finalScores.tree}
+                      onChange={() => {}} // No-op for display only
+                      disabled={true}
                     />
                   </Box>
+                  <Box sx={{
+                    p: 2,
+                    bgcolor: 'rgba(74, 124, 89, 0.05)',
+                    borderRadius: 2,
+                    border: '2px solid #4A7C59',
+                    minWidth: 300
+                  }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#4A7C59', mb: 1 }}>
+                      {finalScores.tree.subtypeName}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#555' }}>
+                      Score: {finalScores.tree.score} | Strength: {finalScores.tree.strength}%
+                    </Typography>
+                  </Box>
                 </Box>
-              )}
+              </Box>
+            )}
 
-              {/* Four Gauge Displays */}
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <MeasureGauge
-                    label="Bucket"
+            {/* Four Beautiful Gauges with Bands */}
+            <Grid container spacing={3}>
+              {/* Knowledge Bucket */}
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box sx={{
+                  p: 3,
+                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                  borderRadius: 3,
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+                }}>
+                  <EnhancedGauge
+                    title="Knowledge Bucket"
                     value={finalScores.bucket}
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.bucket : []}
+                    measureData={measuresData.measures.bucket}
                     color="#5B8BA0"
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.bucket : []}
                   />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <MeasureGauge
-                    label="Thickness"
-                    value={finalScores.thickness}
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.thickness : []}
-                    color="#7BA098"
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <MeasureGauge
-                    label="Input"
-                    value={finalScores.input}
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.input : []}
-                    color="#8B6B47"
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                  <MeasureGauge
-                    label="Output"
-                    value={finalScores.output}
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.output : []}
-                    color="#A08B47"
-                  />
-                </Grid>
+                </Box>
               </Grid>
-            </Paper>
+
+              {/* Resilience */}
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box sx={{
+                  p: 3,
+                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                  borderRadius: 3,
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+                }}>
+                  <EnhancedGauge
+                    title="Resilience"
+                    value={finalScores.thickness}
+                    measureData={measuresData.measures.thickness}
+                    color="#7BA098"
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.thickness : []}
+                  />
+                </Box>
+              </Grid>
+
+              {/* Gathering */}
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box sx={{
+                  p: 3,
+                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                  borderRadius: 3,
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+                }}>
+                  <EnhancedGauge
+                    title="Gathering"
+                    value={finalScores.input}
+                    measureData={measuresData.measures.input}
+                    color="#8B6B47"
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.input : []}
+                  />
+                </Box>
+              </Grid>
+
+              {/* Sharing */}
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box sx={{
+                  p: 3,
+                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                  borderRadius: 3,
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+                }}>
+                  <EnhancedGauge
+                    title="Sharing"
+                    value={finalScores.output}
+                    measureData={measuresData.measures.output}
+                    color="#A08B47"
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.output : []}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+
+            {/* Your TBAP Profile Summary */}
+            <Box sx={{
+              mt: 4,
+              p: 3,
+              background: 'linear-gradient(135deg, #f9f9f9 0%, #e9e9e9 100%)',
+              borderRadius: 3,
+              boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
+            }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 2 }}>
+                Your TBAP Profile
+              </Typography>
+            </Box>
 
 
 
@@ -779,31 +845,57 @@ export default function AssessPage() {
               </Paper>
             )}
 
-            {/* Descriptions */}
-            <Box sx={{ mb: 3 }}>
-              {typeof finalScores.tree === 'object' && (
-                <Typography variant="body1" paragraph>
-                  <strong>Tree:</strong> {
-                    descriptions.treeSubtypes[
-                      finalScores.tree.subtype as keyof typeof descriptions.treeSubtypes
-                    ]?.description
-                  }
-                </Typography>
-              )}
-              <Typography variant="body1" paragraph>
-                <strong>Bucket:</strong> {getMeasureDescription('bucket', finalScores.bucket)}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                <strong>Thickness:</strong> {getMeasureDescription('thickness', finalScores.thickness)}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                <strong>Input:</strong> {getMeasureDescription('input', finalScores.input)}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                <strong>Output:</strong> {getMeasureDescription('output', finalScores.output)}
-              </Typography>
-            </Box>
 
+          </Box>
+        </TabPanel>
+
+        {/* Analytics Tab */}
+        <TabPanel value={activeTab} index={3}>
+          <Box sx={{ p: 3 }}>
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+              Your Complete TBAP Analysis
+            </Typography>
+
+            {/* Concatenated fullDescription paragraph */}
+            {finalScores && (
+              <Box sx={{ mb: 4, p: 3, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+                <Typography variant="body1" paragraph sx={{ lineHeight: 1.8 }}>
+                  {(() => {
+                    // Find the active band for Tree
+                    const treeValue = typeof finalScores.tree === 'object' ? finalScores.tree.value : finalScores.tree;
+                    const treeBand = measuresData.measures.tree.subtypes.find(st => {
+                      if (st.altRange && treeValue >= st.altRange[0]) return true;
+                      return treeValue >= st.range[0] && treeValue <= st.range[1];
+                    });
+
+                    // Find active bands for other measures
+                    const bucketBand = measuresData.measures.bucket.bands.find(b =>
+                      finalScores.bucket >= b.range[0] && finalScores.bucket <= b.range[1]
+                    );
+                    const thicknessBand = measuresData.measures.thickness.bands.find(b =>
+                      finalScores.thickness >= b.range[0] && finalScores.thickness <= b.range[1]
+                    );
+                    const inputBand = measuresData.measures.input.bands.find(b =>
+                      finalScores.input >= b.range[0] && finalScores.input <= b.range[1]
+                    );
+                    const outputBand = measuresData.measures.output.bands.find(b =>
+                      finalScores.output >= b.range[0] && finalScores.output <= b.range[1]
+                    );
+
+                    // Concatenate all fullDesc texts
+                    return [
+                      treeBand?.description || '',
+                      bucketBand?.fullDesc || '',
+                      thicknessBand?.fullDesc || '',
+                      inputBand?.fullDesc || '',
+                      outputBand?.fullDesc || ''
+                    ].filter(desc => desc).join(' ');
+                  })()}
+                </Typography>
+              </Box>
+            )}
+
+            {/* Save Results Button */}
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
               <Button
                 variant="contained"
@@ -811,7 +903,7 @@ export default function AssessPage() {
                 onClick={handleSaveResults}
                 startIcon={<SaveOutlined />}
               >
-                Save & View Analytics
+                Save Results
               </Button>
             </Box>
           </Box>

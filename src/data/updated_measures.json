@@ -1,0 +1,252 @@
+{
+  "treeSubtypes": {
+    "root": {
+      "name": "Root",
+      "range": [
+        1,
+        12
+      ],
+      "description": "Roots are steady and relationship-centered. You are motivated by belonging, harmony, and connection. You nurture trust and create safety for others."
+    },
+    "root_trunk": {
+      "name": "Root-Trunk",
+      "range": [
+        13,
+        24
+      ],
+      "description": "Balances connection with growth. You seek harmony while building skills that strengthen relationships. You support others by developing yourself."
+    },
+    "trunk": {
+      "name": "Trunk",
+      "range": [
+        25,
+        37
+      ],
+      "description": "Trunks are disciplined and mastery-seeking. You are motivated by growth, persistence, and reliability. You bring stability and endurance to those around you."
+    },
+    "trunk_branch": {
+      "name": "Trunk-Branch",
+      "range": [
+        38,
+        49
+      ],
+      "description": "Blends mastery with impact. You pursue skills not just for yourself but to shape outcomes. You combine depth with influence."
+    },
+    "branch": {
+      "name": "Branch",
+      "range": [
+        50,
+        62
+      ],
+      "description": "Branches are bold and impact-focused. You are motivated by contribution, leadership, and shaping systems. You create momentum and legacy."
+    },
+    "branch_leaf": {
+      "name": "Branch-Leaf",
+      "range": [
+        63,
+        74
+      ],
+      "description": "Merges impact with discovery. You create change through innovation and new approaches. You are energized by making a difference and exploring possibilities."
+    },
+    "leaf": {
+      "name": "Leaf",
+      "range": [
+        75,
+        87
+      ],
+      "description": "Leaves are energetic and novelty-driven. You thrive on discovery, freshness, and variety. You inspire creativity and curiosity in others."
+    },
+    "leaf_root": {
+      "name": "Leaf-Root",
+      "range": [
+        88,
+        99
+      ],
+      "description": "Bridges exploration with connection. You seek new experiences that bring people together. Adventure and belonging are linked for you."
+    }
+  },
+  "measures": {
+    "bucket": {
+      "cautious": {
+        "range": [
+          1,
+          24
+        ],
+        "description": "Cautious gut. You lean on outside input before deciding. Your strength is thoroughness and humility."
+      },
+      "balanced": {
+        "range": [
+          25,
+          49
+        ],
+        "description": "Balanced gut. You weigh instincts against evidence. Your strength is measured judgment and clarity."
+      },
+      "confident": {
+        "range": [
+          50,
+          74
+        ],
+        "description": "Confident gut. You trust your inner compass. Your decisiveness inspires others."
+      },
+      "intuitive": {
+        "range": [
+          75,
+          100
+        ],
+        "description": "Intuitive gut. You rely strongly on your instincts. Your strength is conviction and speed."
+      }
+    },
+    "thickness": {
+      "permeable": {
+        "range": [
+          1,
+          24
+        ],
+        "description": "Permeable walls. You adapt quickly when proven wrong. Your strength is openness and flexibility."
+      },
+      "flexible": {
+        "range": [
+          25,
+          49
+        ],
+        "description": "Flexible walls. You hold some truths firmly while remaining open to change. Your strength is balance."
+      },
+      "steady": {
+        "range": [
+          50,
+          74
+        ],
+        "description": "Steady walls. You commit with persistence while allowing time for change. Your strength is resilience with wisdom."
+      },
+      "strong": {
+        "range": [
+          75,
+          100
+        ],
+        "description": "Strong walls. You hold truths tightly, providing consistency and stability. Your strength is reliability and dependability."
+      }
+    },
+    "input": {
+      "action": {
+        "range": [
+          1,
+          24
+        ],
+        "description": "Action learner. You learn best by doing, testing, and discovering firsthand. Your strength is speed and courage."
+      },
+      "experiential": {
+        "range": [
+          25,
+          49
+        ],
+        "description": "Experiential learner. You balance action with selective input. Your strength is timing and discernment."
+      },
+      "inquisitive": {
+        "range": [
+          50,
+          74
+        ],
+        "description": "Inquisitive learner. You actively gather knowledge from multiple sources. Your strength is preparedness and depth."
+      },
+      "collector": {
+        "range": [
+          75,
+          100
+        ],
+        "description": "Broad collector. You constantly seek information and perspectives. Your strength is curiosity and adaptability."
+      }
+    },
+    "output": {
+      "quiet": {
+        "range": [
+          1,
+          24
+        ],
+        "description": "Quiet contributor. You share sparingly, letting presence speak. Your strength is calm influence and focus."
+      },
+      "selective": {
+        "range": [
+          25,
+          49
+        ],
+        "description": "Selective sharer. You share when useful and adjust to context. Your strength is discernment and timing."
+      },
+      "expressive": {
+        "range": [
+          50,
+          74
+        ],
+        "description": "Expressive sharer. You often share ideas to clarify and connect. Your strength is building trust and alignment."
+      },
+      "amplifier": {
+        "range": [
+          75,
+          100
+        ],
+        "description": "Amplifier. You broadcast boldly and widely. Your strength is persuasion, visibility, and inspiration."
+      }
+    }
+  },
+  "engagement": {
+    "independent": {
+      "range": [
+        1,
+        24
+      ],
+      "description": "Independent start. Your first instinct is to act solo. Your strength is self-reliance and courage."
+    },
+    "solo_grounded": {
+      "range": [
+        25,
+        49
+      ],
+      "description": "Solo-grounded. You anchor in your own strength before connecting. Your strength is steadiness and reliability."
+    },
+    "collaborative": {
+      "range": [
+        50,
+        74
+      ],
+      "description": "Collaborative driver. You lean into team and group contexts. Your strength is shared momentum."
+    },
+    "people_first": {
+      "range": [
+        75,
+        100
+      ],
+      "description": "People-first engager. Your first instinct is to connect with others. Your strength is immediate collaboration and connection."
+    }
+  },
+  "interactionArchetypes": {
+    "harmonious_nurturer": {
+      "name": "Harmonious Nurturer",
+      "orientation": "people",
+      "expression": "narrow",
+      "description": "You quietly maintain harmony and support others behind the scenes. Your strength lies in trusted relationships and gentle influence."
+    },
+    "inspiring_connector": {
+      "name": "Inspiring Connector",
+      "orientation": "people",
+      "expression": "wide",
+      "description": "You actively build community through enthusiastic sharing. Your strength is creating inclusive, energizing environments."
+    },
+    "grounded_analyst": {
+      "name": "Grounded Analyst",
+      "orientation": "fact",
+      "expression": "narrow",
+      "description": "You focus on accuracy and depth, sharing selectively. Your strength is consistency and precision."
+    },
+    "impactful_driver": {
+      "name": "Impactful Driver",
+      "orientation": "fact",
+      "expression": "wide",
+      "description": "You push for results with bold clarity. Your strength is rallying others and driving change."
+    },
+    "blended_origin": {
+      "name": "Blended Origin",
+      "orientation": "center",
+      "expression": "balanced",
+      "description": "You move flexibly across styles, adapting to what the moment needs. Your strength is integration and versatility."
+    }
+  }
+}
