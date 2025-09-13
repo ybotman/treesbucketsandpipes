@@ -513,7 +513,7 @@ export default function AssessPage() {
                 <Box sx={{
                   display: 'flex',
                   flexDirection: { xs: 'column', md: 'row' },
-                  gap: 4,
+                  gap: { xs: 2, md: 4 },
                   alignItems: 'center'
                 }}>
                   {/* Compass with controls */}
