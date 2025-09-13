@@ -105,46 +105,87 @@ export function getTreeSubtype(score: number): string {
   return subtype?.key || 'root';
 }
 
-// Get People vs Fact orientation from Tree score
-export function getPeopleFactOrientation(treeScore: number): 'people' | 'fact' {
-  // U-shaped curve: ends are People, middle is Fact
-  if (treeScore <= 25 || treeScore >= 75) {
-    return 'people'; // Root or Leaf zones
+// Calculate Engagement Axis from Tree score
+// Low scores (1) = With Others (group-oriented)
+// High scores (99) = Toward Goal (solo-oriented)
+export function calculateEngagementAxis(treeScore: number): {
+  score: number;
+  label: string;
+  description: string;
+} {
+  // Map tree score (1-99) to 0-π for cosine calculation
+  const normalized = ((treeScore - 1) / 98) * Math.PI;
+  
+  // Cosine: 1 at edges (0, π), -1 at center (π/2)
+  const cosine = Math.cos(normalized);
+  
+  // Scale from [-1, 1] to [1, 99]
+  // -1 (center) maps to 99 (most solo)
+  // 1 (edges) maps to 1 (most group)
+  const scaled = ((-cosine + 1) / 2) * 98 + 1;
+  const score = Math.round(scaled);
+  
+  // Determine label and description based on score
+  let label = '';
+  let description = '';
+  
+  if (score <= 20) {
+    label = 'Highly Relational';
+    description = 'You thrive in collaborative environments and prioritize group harmony and connection.';
+  } else if (score <= 40) {
+    label = 'Group-Leaning';
+    description = 'You prefer working with others while maintaining some independence.';
+  } else if (score <= 60) {
+    label = 'Balanced';
+    description = 'You flexibly engage both independently and collaboratively as needed.';
+  } else if (score <= 80) {
+    label = 'Task-Focused';
+    description = 'You prefer independent work while occasionally collaborating when necessary.';
   } else {
-    return 'fact'; // Trunk or Branch zones
+    label = 'Highly Independent';
+    description = 'You excel at solo work and prefer minimal collaborative requirements.';
   }
+  
+  return { score, label, description };
 }
 
-// Calculate Interaction Archetype
+// Simplified Interaction Model (if still needed)
 export function calculateInteractionArchetype(
   treeScore: number,
   outputScore: number
 ): InteractionArchetype {
-  const orientation = getPeopleFactOrientation(treeScore);
+  const engagement = calculateEngagementAxis(treeScore);
   const expression = outputScore < 50 ? 'narrow' : 'wide';
   
-  // Map to archetype
+  // Simplified archetypes based on engagement and expression
   let archetypeKey = '';
-  if (orientation === 'people' && expression === 'narrow') {
-    archetypeKey = 'harmonious_nurturer';
-  } else if (orientation === 'people' && expression === 'wide') {
-    archetypeKey = 'inspiring_connector';
-  } else if (orientation === 'fact' && expression === 'narrow') {
-    archetypeKey = 'grounded_analyst';
+  let archetypeName = '';
+  let description = '';
+  
+  if (engagement.score < 50 && expression === 'narrow') {
+    archetypeKey = 'quiet_collaborator';
+    archetypeName = 'Quiet Collaborator';
+    description = 'You support group efforts through careful listening and selective contribution.';
+  } else if (engagement.score < 50 && expression === 'wide') {
+    archetypeKey = 'social_connector';
+    archetypeName = 'Social Connector';
+    description = 'You actively build and maintain group connections through frequent communication.';
+  } else if (engagement.score >= 50 && expression === 'narrow') {
+    archetypeKey = 'focused_contributor';
+    archetypeName = 'Focused Contributor';
+    description = 'You work independently and share your expertise when specifically needed.';
   } else {
-    archetypeKey = 'impactful_driver';
+    archetypeKey = 'independent_driver';
+    archetypeName = 'Independent Driver';
+    description = 'You pursue goals autonomously while actively communicating your progress and insights.';
   }
   
-  const archetypeData = descriptions.interactionArchetypes[
-    archetypeKey as keyof typeof descriptions.interactionArchetypes
-  ];
-  
   return {
-    orientation,
+    orientation: engagement.score < 50 ? 'people' : 'fact',
     expression,
     archetype: archetypeKey,
-    archetypeName: archetypeData.name,
-    description: archetypeData.description
+    archetypeName,
+    description
   };
 }
 

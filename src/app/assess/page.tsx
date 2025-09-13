@@ -35,11 +35,13 @@ import descriptions from '@/data/descriptions.json';
 import { 
   processQuestionResponses, 
   calculateInteractionArchetype,
+  calculateEngagementAxis,
   getMeasureDescription,
   getStrengthDescription,
   type AssessmentScores 
 } from '@/lib/calculations';
 import TreeCompass from '@/components/TreeCompass';
+import EngagementAxis from '@/components/EngagementAxis';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -606,6 +608,23 @@ export default function AssessPage() {
                 </Typography>
               </Box>
             )}
+            
+            {/* Engagement Axis Visualization */}
+            {(() => {
+              const treeScore = typeof finalScores.tree === 'object' 
+                ? finalScores.tree.score 
+                : finalScores.tree;
+              const engagement = calculateEngagementAxis(treeScore);
+              return (
+                <Box sx={{ mb: 4 }}>
+                  <EngagementAxis
+                    score={engagement.score}
+                    label={engagement.label}
+                    description={engagement.description}
+                  />
+                </Box>
+              );
+            })()}
 
             {/* All Scores */}
             <Box sx={{ mb: 4, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
