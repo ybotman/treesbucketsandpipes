@@ -1,37 +1,52 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Card, CardContent, Chip, Button, Grid } from '@mui/material';
+import { Box, Typography, Paper, Card, CardContent, Chip, Button, Grid, Switch } from '@mui/material';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { ArrowBackOutlined } from '@mui/icons-material';
 import Link from 'next/link';
+import TreeCompass from '@/components/TreeCompass';
+import MeasureGauge from '@/components/MeasureGauge';
 
 interface Scores {
-  tree: number;
-  bucketLevel: number;
-  bucketThickness: number;
-  inputPipe: number;
-  outputPipe: number;
+  tree: any;
+  bucket: number;
+  thickness: number;
+  input: number;
+  output: number;
+  questionValues?: {
+    tree: number[];
+    bucket: number[];
+    thickness: number[];
+    input: number[];
+    output: number[];
+  };
 }
 
 export default function AnalyticsPage() {
   const [scores, setScores] = useState<Scores | null>(null);
   const [analytics, setAnalytics] = useState<any>(null);
+  const [dataSource, setDataSource] = useState<'questions' | 'manual'>('manual');
+  const [questionValues, setQuestionValues] = useState<any>(null);
 
   useEffect(() => {
-    const savedScores = localStorage.getItem('tbap_scores');
-    if (savedScores) {
-      const parsed = JSON.parse(savedScores);
-      setScores(parsed);
-      calculateAnalytics(parsed);
+    const savedData = localStorage.getItem('tbap_scores');
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      const finalScores = parsed.scores || parsed;
+      setScores(finalScores);
+      setDataSource(parsed.source || 'manual');
+      setQuestionValues(parsed.questionValues);
+      calculateAnalytics(finalScores);
     }
   }, []);
 
   const calculateAnalytics = (scores: Scores) => {
-    const treeType = getTreeType(scores.tree);
-    const archetype = getArchetype(scores.tree, scores.outputPipe);
-    const decisionProfile = getDecisionProfile(scores.bucketLevel, scores.bucketThickness);
-    const pipeProfile = getPipeProfile(scores.inputPipe, scores.outputPipe);
+    const treeScore = typeof scores.tree === 'object' ? scores.tree.score : scores.tree;
+    const treeType = getTreeType(treeScore);
+    const archetype = getArchetype(treeScore, scores.output);
+    const decisionProfile = getDecisionProfile(scores.bucket, scores.thickness);
+    const pipeProfile = getPipeProfile(scores.input, scores.output);
 
     setAnalytics({
       treeType,
@@ -114,36 +129,113 @@ export default function AnalyticsPage() {
     );
   }
 
+  const treeScore = typeof scores.tree === 'object' ? scores.tree.score : scores.tree;
+
   const radarData = [
-    { measure: 'Tree', value: scores.tree, fullMark: 99 },
-    { measure: 'Bucket Level', value: scores.bucketLevel, fullMark: 99 },
-    { measure: 'Bucket Thickness', value: scores.bucketThickness, fullMark: 99 },
-    { measure: 'Input Pipe', value: scores.inputPipe, fullMark: 99 },
-    { measure: 'Output Pipe', value: scores.outputPipe, fullMark: 99 },
+    { measure: 'Tree', value: treeScore, fullMark: 100 },
+    { measure: 'Bucket', value: scores.bucket, fullMark: 100 },
+    { measure: 'Thickness', value: scores.thickness, fullMark: 100 },
+    { measure: 'Input', value: scores.input, fullMark: 100 },
+    { measure: 'Output', value: scores.output, fullMark: 100 },
   ];
 
   const barData = [
-    { name: 'Tree', value: scores.tree, fill: analytics.treeType.color },
-    { name: 'Level', value: scores.bucketLevel, fill: '#5B8BA0' },
-    { name: 'Thickness', value: scores.bucketThickness, fill: '#7BA098' },
-    { name: 'Input', value: scores.inputPipe, fill: '#8B6B47' },
-    { name: 'Output', value: scores.outputPipe, fill: '#A08B47' },
+    { name: 'Tree', value: treeScore, fill: analytics.treeType.color },
+    { name: 'Bucket', value: scores.bucket, fill: '#5B8BA0' },
+    { name: 'Thickness', value: scores.thickness, fill: '#7BA098' },
+    { name: 'Input', value: scores.input, fill: '#8B6B47' },
+    { name: 'Output', value: scores.output, fill: '#A08B47' },
   ];
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <Link href="/assess" passHref style={{ textDecoration: 'none' }}>
-          <Button startIcon={<ArrowBackOutlined />} sx={{ mr: 2 }}>
-            Back to Assessment
-          </Button>
-        </Link>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          Your Analytics
-        </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Link href="/assess" passHref style={{ textDecoration: 'none' }}>
+            <Button startIcon={<ArrowBackOutlined />} sx={{ mr: 2 }}>
+              Back to Assessment
+            </Button>
+          </Link>
+          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+            Your Analytics
+          </Typography>
+        </Box>
+        {dataSource && (
+          <Chip
+            label={`Source: ${dataSource === 'questions' ? 'Questions' : 'Manual Input'}`}
+            color="primary"
+            variant="outlined"
+          />
+        )}
       </Box>
 
       <Grid container spacing={3}>
+        {/* Five Measures with Gauges */}
+        <Grid size={12}>
+          <Paper sx={{ p: 3 }}>
+            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center' }}>
+              Five Measures Summary
+            </Typography>
+
+            {/* Tree Compass */}
+            {typeof scores.tree === 'object' && (
+              <Box sx={{ mb: 4 }}>
+                <TreeCompass
+                  score={scores.tree.score}
+                  strength={scores.tree.strength}
+                  subtype={scores.tree.subtype}
+                />
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                  <Typography variant="h6">
+                    Tree: {scores.tree.score}
+                  </Typography>
+                  <Chip
+                    label={scores.tree.subtypeName || analytics.treeType.type}
+                    color="primary"
+                    size="small"
+                  />
+                </Box>
+              </Box>
+            )}
+
+            {/* Four Gauges */}
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <MeasureGauge
+                  label="Bucket"
+                  value={scores.bucket}
+                  questionValues={dataSource === 'questions' && questionValues ? questionValues.bucket : []}
+                  color="#5B8BA0"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <MeasureGauge
+                  label="Thickness"
+                  value={scores.thickness}
+                  questionValues={dataSource === 'questions' && questionValues ? questionValues.thickness : []}
+                  color="#7BA098"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <MeasureGauge
+                  label="Input"
+                  value={scores.input}
+                  questionValues={dataSource === 'questions' && questionValues ? questionValues.input : []}
+                  color="#8B6B47"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <MeasureGauge
+                  label="Output"
+                  value={scores.output}
+                  questionValues={dataSource === 'questions' && questionValues ? questionValues.output : []}
+                  color="#A08B47"
+                />
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+
         {/* Primary Archetype Card */}
         <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ height: '100%', borderLeft: `4px solid ${analytics.archetype.color}` }}>
@@ -195,7 +287,7 @@ export default function AnalyticsPage() {
               <RadarChart data={radarData}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="measure" />
-                <PolarRadiusAxis angle={90} domain={[0, 99]} />
+                <PolarRadiusAxis angle={90} domain={[0, 100]} />
                 <Radar name="Score" dataKey="value" stroke="#4A7C59" fill="#4A7C59" fillOpacity={0.6} />
               </RadarChart>
             </ResponsiveContainer>
@@ -212,7 +304,7 @@ export default function AnalyticsPage() {
               <BarChart data={barData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
-                <YAxis domain={[0, 99]} />
+                <YAxis domain={[0, 100]} />
                 <Tooltip />
                 <Bar dataKey="value" />
               </BarChart>
@@ -232,7 +324,7 @@ export default function AnalyticsPage() {
                   <Typography variant="body2" color="text.secondary">
                     Tree
                   </Typography>
-                  <Typography variant="h4">{scores.tree}</Typography>
+                  <Typography variant="h4">{treeScore}</Typography>
                   <Chip
                     label={analytics.treeType.type}
                     size="small"
@@ -243,36 +335,36 @@ export default function AnalyticsPage() {
               <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    Bucket Level
+                    Bucket
                   </Typography>
-                  <Typography variant="h4">{scores.bucketLevel}</Typography>
+                  <Typography variant="h4">{scores.bucket}</Typography>
                   <Chip label={analytics.decisionProfile.trust} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    Bucket Thickness
+                    Thickness
                   </Typography>
-                  <Typography variant="h4">{scores.bucketThickness}</Typography>
+                  <Typography variant="h4">{scores.thickness}</Typography>
                   <Chip label={analytics.decisionProfile.resilience} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    Input Pipe
+                    Input
                   </Typography>
-                  <Typography variant="h4">{scores.inputPipe}</Typography>
+                  <Typography variant="h4">{scores.input}</Typography>
                   <Chip label={analytics.pipeProfile.input} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    Output Pipe
+                    Output
                   </Typography>
-                  <Typography variant="h4">{scores.outputPipe}</Typography>
+                  <Typography variant="h4">{scores.output}</Typography>
                   <Chip label={analytics.pipeProfile.output} size="small" sx={{ mt: 1 }} />
                 </Box>
               </Grid>

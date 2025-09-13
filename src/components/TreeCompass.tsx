@@ -12,30 +12,41 @@ interface TreeCompassProps {
 
 export default function TreeCompass({ score, strength, subtype, animated = true }: TreeCompassProps) {
   // Convert score (1-99) to angle in degrees
-  // Score 1 = 0°, Score 99 = 360°
-  const angle = ((score - 1) / 98) * 360;
-  
+  // The scale starts at the bottom with Leaf-Root (score 1) and goes clockwise
+  // Score 1-6: Leaf-Root (bottom, 180°)
+  // Score 7-18: Root (bottom-right, ~202.5°)
+  // Score 19-31: Root-Trunk (right, ~247.5°)
+  // Score 32-43: Trunk (top-right, ~292.5°)
+  // Score 44-56: Trunk-Branch (top, ~337.5°/0°)
+  // Score 57-68: Branch (top-left, ~22.5°)
+  // Score 69-81: Branch-Leaf (left, ~67.5°)
+  // Score 82-93: Leaf (bottom-left, ~112.5°)
+  // Score 94-99: back to Leaf-Root (approaching bottom, ~157.5°)
+
+  // Start at bottom (180°) and go clockwise
+  const angle = 180 + ((score - 1) / 98) * 360;
+
   // Calculate arrow endpoint based on strength
   // Strength affects how far from center the arrow extends
   const arrowLength = 30 + (strength / 100) * 60; // 30-90% of radius
-  
+
   // Convert to radians for calculation
-  const radians = (angle - 90) * (Math.PI / 180); // -90 to start from top
-  
+  const radians = angle * (Math.PI / 180);
+
   // Calculate arrow endpoint
-  const endX = 150 + arrowLength * Math.cos(radians);
-  const endY = 150 + arrowLength * Math.sin(radians);
-  
-  // Subtype labels and positions
+  const endX = 150 + arrowLength * Math.sin(radians);
+  const endY = 150 - arrowLength * Math.cos(radians);
+
+  // Subtype labels and positions - arranged in circle starting from bottom
   const subtypes = [
-    { name: 'Root', angle: 0, x: 250, y: 150 },
-    { name: 'Root-Trunk', angle: 45, x: 220, y: 80 },
-    { name: 'Trunk', angle: 90, x: 150, y: 50 },
-    { name: 'Trunk-Branch', angle: 135, x: 80, y: 80 },
-    { name: 'Branch', angle: 180, x: 50, y: 150 },
-    { name: 'Branch-Leaf', angle: 225, x: 80, y: 220 },
-    { name: 'Leaf', angle: 270, x: 150, y: 250 },
-    { name: 'Leaf-Root', angle: 315, x: 220, y: 220 }
+    { name: 'Leaf-Root', angle: 180, x: 150, y: 260 },     // Bottom
+    { name: 'Root', angle: 225, x: 210, y: 240 },          // Bottom-right
+    { name: 'Root-Trunk', angle: 270, x: 260, y: 150 },    // Right
+    { name: 'Trunk', angle: 315, x: 210, y: 60 },          // Top-right
+    { name: 'Trunk-Branch', angle: 0, x: 150, y: 40 },     // Top
+    { name: 'Branch', angle: 45, x: 90, y: 60 },           // Top-left
+    { name: 'Branch-Leaf', angle: 90, x: 40, y: 150 },     // Left
+    { name: 'Leaf', angle: 135, x: 90, y: 240 }            // Bottom-left
   ];
   
   // Highlight color for active subtype

@@ -21,6 +21,13 @@ export interface AssessmentScores {
   thickness: number;
   input: number;
   output: number;
+  questionValues?: {
+    tree: number[];
+    bucket: number[];
+    thickness: number[];
+    input: number[];
+    output: number[];
+  };
 }
 
 export interface InteractionArchetype {
@@ -31,7 +38,7 @@ export interface InteractionArchetype {
   description: string;
 }
 
-// Calculate average score (already in 1-99 scale)
+// Calculate average score (already in 1-100 scale)
 export function calculateMeasureScore(responses: number[]): number {
   if (responses.length === 0) return 50; // Default to middle
   const average = responses.reduce((sum, val) => sum + val, 0) / responses.length;
@@ -68,8 +75,8 @@ export function calculateTreeScore(scores: TreeScores): TreeResult {
   let degrees = (angle * 180) / Math.PI;
   if (degrees < 0) degrees += 360;
   
-  // Map degrees to 1-99 scale (circular mapping)
-  const score = Math.round((degrees / 360) * 98) + 1;
+  // Map degrees to 1-100 scale (circular mapping)
+  const score = Math.round((degrees / 360) * 99) + 1;
   
   // Determine subtype based on score
   const subtype = getTreeSubtype(score);
@@ -91,38 +98,39 @@ export function calculateTreeScore(scores: TreeScores): TreeResult {
 // Map Tree score to subtype
 export function getTreeSubtype(score: number): string {
   const subtypes = [
-    { key: 'root', range: [1, 12] },
-    { key: 'root_trunk', range: [13, 24] },
-    { key: 'trunk', range: [25, 37] },
-    { key: 'trunk_branch', range: [38, 49] },
-    { key: 'branch', range: [50, 62] },
-    { key: 'branch_leaf', range: [63, 74] },
-    { key: 'leaf', range: [75, 87] },
-    { key: 'leaf_root', range: [88, 99] }
+    { key: 'leaf_root', range: [1, 6] },     // Bottom (people-harmony blend)
+    { key: 'root', range: [7, 19] },         // People-focused, harmony
+    { key: 'root_trunk', range: [20, 31] },  // Transition to structure
+    { key: 'trunk', range: [32, 44] },       // Structure, mastery
+    { key: 'trunk_branch', range: [45, 56] }, // Transition to impact
+    { key: 'branch', range: [57, 69] },      // Impact, results
+    { key: 'branch_leaf', range: [70, 81] }, // Transition to innovation
+    { key: 'leaf', range: [82, 94] },        // Innovation, discovery
+    { key: 'leaf_root', range: [95, 100] }   // Back to people-harmony blend
   ];
-  
+
   const subtype = subtypes.find(s => score >= s.range[0] && score <= s.range[1]);
-  return subtype?.key || 'root';
+  return subtype?.key || 'leaf_root';
 }
 
 // Calculate Engagement Axis from Tree score
 // Low scores (1) = With Others (group-oriented)
-// High scores (99) = Toward Goal (solo-oriented)
+// High scores (100) = Toward Goal (solo-oriented)
 export function calculateEngagementAxis(treeScore: number): {
   score: number;
   label: string;
   description: string;
 } {
-  // Map tree score (1-99) to 0-π for cosine calculation
-  const normalized = ((treeScore - 1) / 98) * Math.PI;
+  // Map tree score (1-100) to 0-π for cosine calculation
+  const normalized = ((treeScore - 1) / 99) * Math.PI;
   
   // Cosine: 1 at edges (0, π), -1 at center (π/2)
   const cosine = Math.cos(normalized);
   
-  // Scale from [-1, 1] to [1, 99]
-  // -1 (center) maps to 99 (most solo)
+  // Scale from [-1, 1] to [1, 100]
+  // -1 (center) maps to 100 (most solo)
   // 1 (edges) maps to 1 (most group)
-  const scaled = ((-cosine + 1) / 2) * 98 + 1;
+  const scaled = ((-cosine + 1) / 2) * 99 + 1;
   const score = Math.round(scaled);
   
   // Determine label and description based on score
@@ -268,12 +276,25 @@ export function processQuestionResponses(
   // Calculate final Tree result using vector model
   const treeResult = calculateTreeScore(treeScores);
   
+  // Collect all tree responses (regardless of subtype) for the gauge
+  const allTreeResponses: number[] = [];
+  Object.values(treeResponses).forEach(responses => {
+    allTreeResponses.push(...responses);
+  });
+
   // Calculate other measure scores
   return {
     tree: treeResult,
     bucket: calculateMeasureScore(otherResponses.bucket),
     thickness: calculateMeasureScore(otherResponses.thickness),
     input: calculateMeasureScore(otherResponses.input),
-    output: calculateMeasureScore(otherResponses.output)
+    output: calculateMeasureScore(otherResponses.output),
+    questionValues: {
+      tree: allTreeResponses,
+      bucket: otherResponses.bucket,
+      thickness: otherResponses.thickness,
+      input: otherResponses.input,
+      output: otherResponses.output
+    }
   };
 }

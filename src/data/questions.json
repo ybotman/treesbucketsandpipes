@@ -203,13 +203,13 @@
   ],
   "scale": {
     "min": 1,
-    "max": 99,
+    "max": 100,
     "markers": [
       { "value": 1, "label": "Strongly Disagree" },
       { "value": 25, "label": "Disagree" },
       { "value": 50, "label": "Neutral" },
       { "value": 75, "label": "Agree" },
-      { "value": 99, "label": "Strongly Agree" }
+      { "value": 100, "label": "Strongly Agree" }
     ]
   }
 }

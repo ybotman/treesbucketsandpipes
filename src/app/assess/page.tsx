@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Tabs,
@@ -19,6 +19,7 @@ import {
   FormControl,
   Grid,
   Alert,
+  Switch,
 } from '@mui/material';
 import { 
   QuizOutlined, 
@@ -32,16 +33,16 @@ import {
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
 import descriptions from '@/data/descriptions.json';
-import { 
-  processQuestionResponses, 
+import {
+  processQuestionResponses,
   calculateInteractionArchetype,
-  calculateEngagementAxis,
   getMeasureDescription,
-  getStrengthDescription,
-  type AssessmentScores 
+  type AssessmentScores
 } from '@/lib/calculations';
 import TreeCompass from '@/components/TreeCompass';
-import EngagementAxis from '@/components/EngagementAxis';
+import MeasureGauge from '@/components/MeasureGauge';
+import CircularSlider from '@/components/CircularSlider';
+import ProfessionalSlider from '@/components/ProfessionalSlider';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -72,11 +73,44 @@ export default function AssessPage() {
   const [scoreSource, setScoreSource] = useState<'questions' | 'manual'>('manual');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [tempQuestionValue, setTempQuestionValue] = useState<number | null>(null);
+  const [randomizedQuestions, setRandomizedQuestions] = useState(questions.questions);
 
-  // Randomize questions once on mount
-  const randomizedQuestions = useMemo(() => {
-    return [...questions.questions].sort(() => Math.random() - 0.5);
+  // Load saved data on mount and randomize questions client-side only
+  useEffect(() => {
+    // Randomize questions on client side only
+    setRandomizedQuestions([...questions.questions].sort(() => Math.random() - 0.5));
+
+    const savedManualScores = localStorage.getItem('tbap_manual_scores');
+    const savedQuestionResponses = localStorage.getItem('tbap_question_responses');
+    const savedScoreSource = localStorage.getItem('tbap_score_source');
+
+    if (savedManualScores) {
+      setManualScores(JSON.parse(savedManualScores));
+    }
+
+    if (savedQuestionResponses) {
+      const parsed = JSON.parse(savedQuestionResponses);
+      setQuestionResponses(new Map(parsed));
+    }
+
+    if (savedScoreSource) {
+      setScoreSource(savedScoreSource as 'questions' | 'manual');
+    }
   }, []);
+
+  // Save data whenever it changes
+  useEffect(() => {
+    localStorage.setItem('tbap_manual_scores', JSON.stringify(manualScores));
+  }, [manualScores]);
+
+  useEffect(() => {
+    const responsesArray = Array.from(questionResponses.entries());
+    localStorage.setItem('tbap_question_responses', JSON.stringify(responsesArray));
+  }, [questionResponses]);
+
+  useEffect(() => {
+    localStorage.setItem('tbap_score_source', scoreSource);
+  }, [scoreSource]);
   
   // Initialize temp value when first loading or changing questions
   useEffect(() => {
@@ -142,7 +176,13 @@ export default function AssessPage() {
   };
 
   const handleSaveResults = () => {
-    localStorage.setItem('tbap_scores', JSON.stringify(finalScores));
+    // Save final scores with source info
+    const dataToSave = {
+      scores: finalScores,
+      source: scoreSource,
+      questionValues: scoreSource === 'questions' ? calculatedScores?.questionValues : undefined
+    };
+    localStorage.setItem('tbap_scores', JSON.stringify(dataToSave));
     localStorage.setItem('tbap_archetype', JSON.stringify(interactionArchetype));
     router.push('/analytics');
   };
@@ -268,7 +308,7 @@ export default function AssessPage() {
                                 {tempQuestionValue}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
-                                / 99
+                                / 100
                               </Typography>
                             </>
                           ) : (
@@ -446,117 +486,71 @@ export default function AssessPage() {
             </Alert>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {/* Tree */}
+              {/* Tree - Circular Dial */}
               <Box>
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', textAlign: 'center' }}>
                   Tree (Motivation for Change)
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
                   What drives you to act and change
                 </Typography>
-                <Slider
+                <CircularSlider
                   value={manualScores.tree}
-                  onChange={(_, value) => handleManualScoreChange('tree', value as number)}
-                  min={1}
-                  max={99}
-                  marks={[
-                    { value: 1, label: 'Root' },
-                    { value: 25, label: 'Trunk' },
-                    { value: 50, label: 'Branch' },
-                    { value: 75, label: 'Leaf' },
-                    { value: 99, label: '' }
-                  ]}
-                  valueLabelDisplay="on"
+                  onChange={(value) => handleManualScoreChange('tree', value)}
                 />
               </Box>
 
               {/* Bucket */}
-              <Box>
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Bucket (Knowledge Capacity)
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  How much you can hold and juggle at once
-                </Typography>
-                <Slider
-                  value={manualScores.bucket}
-                  onChange={(_, value) => handleManualScoreChange('bucket', value as number)}
-                  min={1}
-                  max={99}
-                  marks={[
-                    { value: 1, label: 'Focused' },
-                    { value: 50, label: 'Balanced' },
-                    { value: 99, label: 'Multiple' }
-                  ]}
-                  valueLabelDisplay="on"
-                />
-              </Box>
+              <ProfessionalSlider
+                label="Bucket (Gut / Confidence)"
+                description="How much you rely on your inner sense of knowing vs. external sources"
+                value={manualScores.bucket}
+                onChange={(value) => handleManualScoreChange('bucket', value)}
+                min={1}
+                max={100}
+                color="#5B8BA0"
+                leftLabel="External"
+                rightLabel="Internal"
+              />
 
               {/* Thickness */}
-              <Box>
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Thickness (Questioning & Boundaries)
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  How much you question and protect your boundaries
-                </Typography>
-                <Slider
-                  value={manualScores.thickness}
-                  onChange={(_, value) => handleManualScoreChange('thickness', value as number)}
-                  min={1}
-                  max={99}
-                  marks={[
-                    { value: 1, label: 'Permeable' },
-                    { value: 50, label: 'Flexible' },
-                    { value: 99, label: 'Strong' }
-                  ]}
-                  valueLabelDisplay="on"
-                />
-              </Box>
+              <ProfessionalSlider
+                label="Bucket Thickness (Reassessment)"
+                description="How easily you reassess what you know when contradictions appear"
+                value={manualScores.thickness}
+                onChange={(value) => handleManualScoreChange('thickness', value)}
+                min={1}
+                max={100}
+                color="#7BA098"
+                leftLabel="Thin"
+                rightLabel="Thick"
+              />
 
               {/* Input */}
-              <Box>
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Input (Learning Style)
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  How you gather and process information
-                </Typography>
-                <Slider
-                  value={manualScores.input}
-                  onChange={(_, value) => handleManualScoreChange('input', value as number)}
-                  min={1}
-                  max={99}
-                  marks={[
-                    { value: 1, label: 'Selective' },
-                    { value: 50, label: 'Moderate' },
-                    { value: 99, label: 'Wide' }
-                  ]}
-                  valueLabelDisplay="on"
-                />
-              </Box>
+              <ProfessionalSlider
+                label="Input Pipe (Learning / Gathering)"
+                description="How much outside information you prefer before updating your bucket"
+                value={manualScores.input}
+                onChange={(value) => handleManualScoreChange('input', value)}
+                min={1}
+                max={100}
+                color="#8B6B47"
+                leftLabel="Low"
+                rightLabel="High"
+              />
 
               {/* Output */}
-              <Box>
-                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                  Output (Sharing Style)
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  How you express and share what you know
-                </Typography>
-                <Slider
-                  value={manualScores.output}
-                  onChange={(_, value) => handleManualScoreChange('output', value as number)}
-                  min={1}
-                  max={99}
-                  marks={[
-                    { value: 1, label: 'Internal' },
-                    { value: 50, label: 'Balanced' },
-                    { value: 99, label: 'External' }
-                  ]}
-                  valueLabelDisplay="on"
-                />
-              </Box>
+              <ProfessionalSlider
+                label="Output Pipe (Sharing / Teaching)"
+                description="How strongly you feel the need to share what you know"
+                value={manualScores.output}
+                onChange={(value) => handleManualScoreChange('output', value)}
+                min={1}
+                max={100}
+                color="#A08B47"
+                leftLabel="Low"
+                rightLabel="High"
+              />
             </Box>
 
             <Box sx={{ mt: 4, textAlign: 'center' }}>
@@ -577,103 +571,115 @@ export default function AssessPage() {
         {/* Summary Tab */}
         <TabPanel value={activeTab} index={2}>
           <Box sx={{ px: 3 }}>
-            <Typography variant="h5" sx={{ mb: 3 }}>
-              Your TBAP Profile
-            </Typography>
-
-            {/* Tree Compass Visualization */}
-            {typeof finalScores.tree === 'object' && (
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Tree Position
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h5">
+                Your TBAP Profile
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Use {scoreSource === 'manual' ? 'Manual' : 'Questions'} Data
                 </Typography>
-                <TreeCompass
-                  score={finalScores.tree.score}
-                  strength={finalScores.tree.strength}
-                  subtype={finalScores.tree.subtype}
+                <Switch
+                  checked={scoreSource === 'questions'}
+                  onChange={(e) => {
+                    if (e.target.checked && calculatedScores) {
+                      setScoreSource('questions');
+                    } else if (!e.target.checked) {
+                      setScoreSource('manual');
+                    }
+                  }}
+                  disabled={!calculatedScores}
                 />
-                <Box sx={{ textAlign: 'center', mt: 2 }}>
-                  <Chip
-                    label={`${finalScores.tree.subtypeName} (Position: ${finalScores.tree.score})`}
-                    color="primary"
-                    sx={{ mr: 1 }}
-                  />
-                  <Chip
-                    label={getStrengthDescription(finalScores.tree.strength).label}
-                    variant="outlined"
-                  />
-                </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
-                  {getStrengthDescription(finalScores.tree.strength).description}
-                </Typography>
               </Box>
-            )}
-            
-            {/* Engagement Axis Visualization */}
-            {(() => {
-              const treeScore = typeof finalScores.tree === 'object' 
-                ? finalScores.tree.score 
-                : finalScores.tree;
-              const engagement = calculateEngagementAxis(treeScore);
-              return (
-                <Box sx={{ mb: 4 }}>
-                  <EngagementAxis
-                    score={engagement.score}
-                    label={engagement.label}
-                    description={engagement.description}
-                  />
-                </Box>
-              );
-            })()}
-
-            {/* All Scores */}
-            <Box sx={{ mb: 4, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Five Measures</Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="body2" color="text.secondary">Tree</Typography>
-                  <Typography variant="h6">
-                    {typeof finalScores.tree === 'object' ? finalScores.tree.score : finalScores.tree}
-                  </Typography>
-                </Grid>
-                <Grid size={{ xs: 6, md: 3 }}>
-                  <Typography variant="body2" color="text.secondary">Bucket</Typography>
-                  <Typography variant="h6">{finalScores.bucket}</Typography>
-                </Grid>
-                <Grid size={{ xs: 6, md: 3 }}>
-                  <Typography variant="body2" color="text.secondary">Thickness</Typography>
-                  <Typography variant="h6">{finalScores.thickness}</Typography>
-                </Grid>
-                <Grid size={{ xs: 6, md: 3 }}>
-                  <Typography variant="body2" color="text.secondary">Input</Typography>
-                  <Typography variant="h6">{finalScores.input}</Typography>
-                </Grid>
-                <Grid size={{ xs: 6, md: 3 }}>
-                  <Typography variant="body2" color="text.secondary">Output</Typography>
-                  <Typography variant="h6">{finalScores.output}</Typography>
-                </Grid>
-              </Grid>
             </Box>
 
-            {/* Interaction Archetype */}
-            <Paper sx={{ p: 3, mb: 4, bgcolor: 'primary.main', color: 'white' }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Interaction Archetype: {interactionArchetype.archetypeName}
+            {/* Five Measures Visualization */}
+            <Paper sx={{ p: 3, mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 3, textAlign: 'center' }}>
+                Five Measures
               </Typography>
-              <Typography variant="body1">
-                {interactionArchetype.description}
-              </Typography>
-              <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-                <Chip
-                  label={`${interactionArchetype.orientation} oriented`}
-                  sx={{ bgcolor: 'white', color: 'primary.main' }}
-                />
-                <Chip
-                  label={`${interactionArchetype.expression} expression`}
-                  sx={{ bgcolor: 'white', color: 'primary.main' }}
-                />
-              </Box>
+
+              {/* Tree Compass */}
+              {typeof finalScores.tree === 'object' && (
+                <Box sx={{ mb: 4 }}>
+                  <TreeCompass
+                    score={finalScores.tree.score}
+                    strength={finalScores.tree.strength}
+                    subtype={finalScores.tree.subtype}
+                  />
+                  <Box sx={{ textAlign: 'center', mt: 2 }}>
+                    <Typography variant="h6">
+                      Tree: {finalScores.tree.score}
+                    </Typography>
+                    <Chip
+                      label={`${finalScores.tree.subtypeName}`}
+                      color="primary"
+                      size="small"
+                    />
+                  </Box>
+                </Box>
+              )}
+
+              {/* Four Gauge Displays */}
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <MeasureGauge
+                    label="Bucket"
+                    value={finalScores.bucket}
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.bucket : []}
+                    color="#5B8BA0"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <MeasureGauge
+                    label="Thickness"
+                    value={finalScores.thickness}
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.thickness : []}
+                    color="#7BA098"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <MeasureGauge
+                    label="Input"
+                    value={finalScores.input}
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.input : []}
+                    color="#8B6B47"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <MeasureGauge
+                    label="Output"
+                    value={finalScores.output}
+                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.output : []}
+                    color="#A08B47"
+                  />
+                </Grid>
+              </Grid>
             </Paper>
+
+
+
+            {/* Interaction Archetype - Hidden for now */}
+            {false && (
+              <Paper sx={{ p: 3, mb: 4, bgcolor: 'primary.main', color: 'white' }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Interaction Archetype: {interactionArchetype.archetypeName}
+                </Typography>
+                <Typography variant="body1">
+                  {interactionArchetype.description}
+                </Typography>
+                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                  <Chip
+                    label={`${interactionArchetype.orientation} oriented`}
+                    sx={{ bgcolor: 'white', color: 'primary.main' }}
+                  />
+                  <Chip
+                    label={`${interactionArchetype.expression} expression`}
+                    sx={{ bgcolor: 'white', color: 'primary.main' }}
+                  />
+                </Box>
+              </Paper>
+            )}
 
             {/* Descriptions */}
             <Box sx={{ mb: 3 }}>
