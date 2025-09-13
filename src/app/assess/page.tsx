@@ -34,10 +34,11 @@ import {
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
 import descriptions from '@/data/descriptions.json';
-import measuresDataRaw from '@/data/measures_complete.json';
+import measuresCompleteData from '@/data/measures_complete.json';
 import type { MeasuresComplete } from '@/types/measures';
 
-const measuresData = measuresDataRaw as unknown as MeasuresComplete;
+const fullData = measuresCompleteData as unknown as MeasuresComplete;
+const measuresData = fullData.measures;
 import {
   processQuestionResponses,
   calculateInteractionArchetype,
@@ -501,10 +502,10 @@ export default function AssessPage() {
                 {/* Header */}
                 <Box sx={{ mb: 3 }}>
                   <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 0.5 }}>
-                    {measuresData.measures.tree.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measuresData.measures.tree.altName})</span>
+                    {measuresData.tree.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measuresData.tree.altName})</span>
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#666' }}>
-                    {measuresData.measures.tree.shortDescription}
+                    {measuresData.tree.shortDescription}
                   </Typography>
                 </Box>
 
@@ -598,7 +599,7 @@ export default function AssessPage() {
                         {(() => {
                           const treeValue = manualScores.tree;
                           // Get the matching subtype description from the JSON
-                          const subtype = measuresData.measures.tree.subtypes.find(st => {
+                          const subtype = measuresData.tree.subtypes.find(st => {
                             if (st.id === 'root_leaf') {
                               return (treeValue >= st.range[0] && treeValue <= st.range[1]) ||
                                      (st.altRange && treeValue >= st.altRange[0] && treeValue <= st.altRange[1]);
@@ -615,7 +616,7 @@ export default function AssessPage() {
 
               {/* Bucket */}
               <ProfessionalSlider
-                measureData={measuresData.measures.bucket}
+                measureData={measuresData.bucket}
                 value={manualScores.bucket}
                 onChange={(value) => handleManualScoreChange('bucket', value)}
                 min={1}
@@ -625,7 +626,7 @@ export default function AssessPage() {
 
               {/* Thickness */}
               <ProfessionalSlider
-                measureData={measuresData.measures.thickness}
+                measureData={measuresData.thickness}
                 value={manualScores.thickness}
                 onChange={(value) => handleManualScoreChange('thickness', value)}
                 min={1}
@@ -635,7 +636,7 @@ export default function AssessPage() {
 
               {/* Input */}
               <ProfessionalSlider
-                measureData={measuresData.measures.input}
+                measureData={measuresData.input}
                 value={manualScores.input}
                 onChange={(value) => handleManualScoreChange('input', value)}
                 min={1}
@@ -645,7 +646,7 @@ export default function AssessPage() {
 
               {/* Output */}
               <ProfessionalSlider
-                measureData={measuresData.measures.output}
+                measureData={measuresData.output}
                 value={manualScores.output}
                 onChange={(value) => handleManualScoreChange('output', value)}
                 min={1}
@@ -746,7 +747,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Knowledge Bucket"
                     value={finalScores.bucket}
-                    measureData={measuresData.measures.bucket}
+                    measureData={measuresData.bucket}
                     color="#5B8BA0"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.bucket : []}
                   />
@@ -764,7 +765,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Resilience"
                     value={finalScores.thickness}
-                    measureData={measuresData.measures.thickness}
+                    measureData={measuresData.thickness}
                     color="#7BA098"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.thickness : []}
                   />
@@ -782,7 +783,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Gathering"
                     value={finalScores.input}
-                    measureData={measuresData.measures.input}
+                    measureData={measuresData.input}
                     color="#8B6B47"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.input : []}
                   />
@@ -800,7 +801,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Sharing"
                     value={finalScores.output}
-                    measureData={measuresData.measures.output}
+                    measureData={measuresData.output}
                     color="#A08B47"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.output : []}
                   />
@@ -862,23 +863,23 @@ export default function AssessPage() {
                 <Typography variant="body1" paragraph sx={{ lineHeight: 1.8 }}>
                   {(() => {
                     // Find the active band for Tree
-                    const treeValue = typeof finalScores.tree === 'object' ? finalScores.tree.value : finalScores.tree;
-                    const treeBand = measuresData.measures.tree.subtypes.find(st => {
+                    const treeValue = typeof finalScores.tree === 'object' ? finalScores.tree.score : finalScores.tree;
+                    const treeBand = measuresData.tree.subtypes.find(st => {
                       if (st.altRange && treeValue >= st.altRange[0]) return true;
                       return treeValue >= st.range[0] && treeValue <= st.range[1];
                     });
 
                     // Find active bands for other measures
-                    const bucketBand = measuresData.measures.bucket.bands.find(b =>
+                    const bucketBand = measuresData.bucket.bands.find(b =>
                       finalScores.bucket >= b.range[0] && finalScores.bucket <= b.range[1]
                     );
-                    const thicknessBand = measuresData.measures.thickness.bands.find(b =>
+                    const thicknessBand = measuresData.thickness.bands.find(b =>
                       finalScores.thickness >= b.range[0] && finalScores.thickness <= b.range[1]
                     );
-                    const inputBand = measuresData.measures.input.bands.find(b =>
+                    const inputBand = measuresData.input.bands.find(b =>
                       finalScores.input >= b.range[0] && finalScores.input <= b.range[1]
                     );
-                    const outputBand = measuresData.measures.output.bands.find(b =>
+                    const outputBand = measuresData.output.bands.find(b =>
                       finalScores.output >= b.range[0] && finalScores.output <= b.range[1]
                     );
 

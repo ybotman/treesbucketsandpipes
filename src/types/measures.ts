@@ -51,6 +51,8 @@ export interface MeasuresComplete {
     thickness: MeasureData;
     input: MeasureData;
     output: MeasureData;
+    tree: TreeData;
+    engagement?: any;
+    interaction?: any;
   };
-  tree: TreeData;
 }
