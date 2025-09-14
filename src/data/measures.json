@@ -15,8 +15,8 @@
           "calculationRange": [88, 99],
           "altRange": [93.75, 100],
           "position": "bottom",
-          "description": "Bridges exploration with connection, seeking new experiences that bring people together.",
-          "userDescription": "As a Root-Leaf blend, you seek new experiences that bring people together. Your adventures are more meaningful when shared with others. You bridge the need for novelty with deep connection.",
+           "description": "Bridges exploration with connection—uniting Leaf’s love of novelty with Root’s need for belonging. You seek fresh experiences that invite people in and create shared meaning.",
+  "userDescription": "Because you are a people-centered explorer, new experiences matter most when they’re shared. You’re energized by discovering what’s next and turning that curiosity into moments of togetherness. You naturally weave novelty into community, helping others feel included while you open new doors.",
           "legacyRange": [88, 99]
         },
         {
@@ -26,8 +26,8 @@
           "range": [6.25, 18.75],
           "calculationRange": [1, 12],
           "position": "bottom-right",
-          "description": "Deep connection to community and harmony, motivated by belonging and creating safe spaces.",
-          "userDescription": "As a Root, you are motivated by belonging, peace, and creating safe spaces for others. Your 'bubble' centers on maintaining relationships and ensuring everyone feels included. You find fulfillment in nurturing harmony.",
+       "description": "Deep connection to community and harmony, motivated by belonging and creating safe spaces.",
+  "userDescription": "Because you are a person who values peace and belonging, you find meaning in maintaining relationships and ensuring others feel included. Creating safe, supportive spaces comes naturally to you, and harmony is the gift you bring to those around you.",
           "legacyRange": [1, 12]
         },
         {
@@ -38,7 +38,7 @@
           "calculationRange": [13, 24],
           "position": "right",
           "description": "Balances connection with personal growth, seeking harmony while building capabilities.",
-          "userDescription": "As a Root-Trunk blend, you seek harmony while building your own capabilities. You develop skills that help you better support and connect with others. You balance community needs with personal mastery.",
+  "userDescription": "Because you are a person who blends care for others with a drive to grow, you seek harmony while building your own capabilities. Developing skills isn’t just for yourself—it’s a way to better support and connect with those around you. You balance community needs with personal mastery.",
           "legacyRange": [13, 24]
         },
         {
@@ -48,8 +48,8 @@
           "range": [31.25, 43.75],
           "calculationRange": [25, 37],
           "position": "top-right",
-          "description": "Focused on mastery and self-improvement through deep knowledge and persistent practice.",
-          "userDescription": "As a Trunk, you are driven by the desire to become more capable and skilled. Deep knowledge and persistent practice define your approach to growth. You find satisfaction in continuous improvement and expertise.",
+  "description": "Focused on mastery and self-improvement through deep knowledge and persistent practice.",
+  "userDescription": "Because you are a person who strives for growth and capability, you are driven by the pursuit of mastery. Deep knowledge and persistent practice shape your path forward. You find fulfillment in continuous improvement and in becoming more skilled and effective over time.",
           "legacyRange": [25, 37]
         },
         {
@@ -59,8 +59,9 @@
           "range": [43.75, 56.25],
           "calculationRange": [38, 49],
           "position": "top",
-          "description": "Combines personal mastery with system impact to create meaningful change.",
-          "userDescription": "As a Trunk-Branch blend, you develop expertise not just for yourself, but to create meaningful change in your organization or field. You bridge personal excellence with broader influence.",
+  "description": "Combines personal mastery with system impact to create meaningful change.",
+  "userDescription": "Because you are a person who develops expertise not only for yourself but also for others, you connect personal growth with broader influence. Your skills become a way to shape systems and create meaningful change, bridging self-improvement with lasting impact."
+,
           "legacyRange": [38, 49]
         },
         {
@@ -81,8 +82,8 @@
           "range": [68.75, 81.25],
           "calculationRange": [63, 74],
           "position": "left",
-          "description": "Merges impact with exploration, creating change through innovation and new approaches.",
-          "userDescription": "As a Branch-Leaf blend, you create change through innovation and new approaches. You're motivated by both making a difference and discovering new possibilities. You combine strategic thinking with creative exploration.",
+  "description": "Merges impact with exploration, creating change through innovation and new approaches.",
+  "userDescription": "Because you are a person who blends the drive for impact with the curiosity of discovery, you create change through innovation and fresh approaches. You’re motivated both by making a difference and by exploring new possibilities, combining strategic thinking with creative exploration.",
           "legacyRange": [63, 74]
         },
         {
@@ -92,8 +93,8 @@
           "range": [81.25, 93.75],
           "calculationRange": [75, 87],
           "position": "bottom-left",
-          "description": "Energized by novelty and discovery, thriving on new experiences and exploration.",
-          "userDescription": "As a Leaf, you thrive on new experiences, fresh starts, and exploring uncharted territory. Change and variety fuel your motivation. You find energy in the unknown and excitement in constant discovery.",
+     "description": "Energized by novelty and discovery, thriving on new experiences and exploration.",
+  "userDescription": "Because you are a person who thrives on novelty and discovery, you find energy in fresh starts and uncharted territory. Change excites you, and new experiences fuel your motivation. You bring vitality and curiosity to everything you do, keeping momentum alive through exploration.",
           "legacyRange": [75, 87]
         }
       ]
