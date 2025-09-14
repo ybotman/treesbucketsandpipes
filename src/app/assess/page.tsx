@@ -43,6 +43,7 @@ const measures = measuresData.measures;
 import {
   processQuestionResponses,
   calculateInteractionArchetype,
+  calculateEngagementAxis,
   type AssessmentScores
 } from '@/lib/calculations';
 import TreeCompass from '@/components/TreeCompass';
@@ -959,6 +960,15 @@ export default function AssessPage() {
                       return treeValue >= st.range[0] && treeValue <= st.range[1];
                     });
 
+                    // Calculate engagement score from tree value
+                    const engagementScore = calculateEngagementAxis(treeValue).score;
+
+                    // Get engagement bands from analytics section
+                    const engagementBands = (measuresData as any).analytics?.engagement?.bands || [];
+                    const engagementBand = engagementBands.find((b: any) =>
+                      engagementScore >= b.range[0] && engagementScore <= b.range[1]
+                    );
+
                     // Find active bands for other measures
                     const bucketBand = measures.bucket.bands.find(b =>
                       finalScores.bucket >= b.range[0] && finalScores.bucket <= b.range[1]
@@ -973,9 +983,10 @@ export default function AssessPage() {
                       finalScores.output >= b.range[0] && finalScores.output <= b.range[1]
                     );
 
-                    // Concatenate all fullDesc texts
+                    // Concatenate all fullDesc texts including engagement
                     return [
                       treeBand?.description || '',
+                      engagementBand?.fullDesc || '',
                       bucketBand?.fullDesc || '',
                       thicknessBand?.fullDesc || '',
                       inputBand?.fullDesc || '',
