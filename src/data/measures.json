@@ -388,6 +388,7 @@
           "title": "Highly Solo",
           "shortDesc": "Work alone, think alone",
           "fullDesc": "You strongly prefer working independently. You process best in solitude and engage others only when necessary.",
+          "fullDescription": "You strongly prefer working independently. You process best in solitude and engage others only when necessary. Your default mode is to work through problems on your own, seeking quiet space to think deeply. Collaboration happens when required, but you find your best insights emerge from solo reflection.",
           "color": "#8B4513"
         },
         {
@@ -397,6 +398,7 @@
           "title": "Solo-Leaning",
           "shortDesc": "Start solo, engage selectively",
           "fullDesc": "You begin tasks independently but bring in others strategically. Your strength is focused execution.",
+          "fullDescription": "You begin tasks independently but bring in others strategically. Your strength is focused execution. You prefer to develop initial ideas and solutions on your own before seeking feedback. While you value collaboration, you're selective about when and how you engage others, choosing moments where group input adds clear value.",
           "color": "#A0522D"
         },
         {
@@ -406,6 +408,7 @@
           "title": "Balanced Engagement",
           "shortDesc": "Flex between solo and team",
           "fullDesc": "You adapt fluidly between independent work and collaboration. Your strength is versatility.",
+          "fullDescription": "You adapt fluidly between independent work and collaboration. Your strength is versatility. You're equally comfortable working alone or in groups, instinctively knowing when each approach serves best. This flexibility allows you to bridge different working styles and serve as a translator between solo processors and team collaborators.",
           "color": "#CD853F"
         },
         {
@@ -415,6 +418,7 @@
           "title": "Team-Leaning",
           "shortDesc": "Prefer collaboration, can work solo",
           "fullDesc": "You naturally seek input and collaboration but can work independently when needed. Your strength is inclusive problem-solving.",
+          "fullDescription": "You naturally seek input and collaboration but can work independently when needed. Your strength is inclusive problem-solving. Your first instinct is to gather perspectives and build consensus. You believe the best solutions emerge from diverse viewpoints and actively create opportunities for group engagement, though you can focus solo when circumstances require.",
           "color": "#4682B4"
         },
         {
@@ -424,6 +428,7 @@
           "title": "Highly Collaborative",
           "shortDesc": "Teams first, always engage",
           "fullDesc": "You thrive in group settings and actively seek collaboration. You find energy and clarity through interaction with others.",
+          "fullDescription": "You thrive in group settings and actively seek collaboration. You find energy and clarity through interaction with others. Working alone feels isolating and inefficient to you. Your best thinking happens in dialogue, your solutions emerge through discussion, and you instinctively build teams around any challenge. The collective intelligence of a group is your preferred problem-solving tool.",
           "color": "#1E90FF"
         }
       ]
