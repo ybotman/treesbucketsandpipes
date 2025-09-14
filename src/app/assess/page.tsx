@@ -33,13 +33,16 @@ import {
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
-import measuresData from '@/data/measures.json';
-// Direct access to measures
+import measuresDataRaw from '@/data/measures.json';
+import type { MeasuresComplete } from '@/types/measures';
+
+// Type-safe access to measures with proper type coercion
+const measuresData = measuresDataRaw as unknown as MeasuresComplete;
 const measures = measuresData.measures;
+
 import {
   processQuestionResponses,
   calculateInteractionArchetype,
-  getMeasureDescription,
   type AssessmentScores
 } from '@/lib/calculations';
 import TreeCompass from '@/components/TreeCompass';

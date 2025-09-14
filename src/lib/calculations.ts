@@ -198,19 +198,20 @@ export function calculateInteractionArchetype(
 }
 
 // Get description for a measure value
-export function getMeasureDescription(measure: string, value: number): string {
-  const measureData = measures.measures[measure as keyof typeof measures.measures]?.legacyLevels;
-  if (!measureData) return '';
+// TODO: Fix this function - legacyLevels property doesn't exist in current data structure
+// export function getMeasureDescription(measure: string, value: number): string {
+//   const measureData = measures.measures[measure as keyof typeof measures.measures]?.legacyLevels;
+//   if (!measureData) return '';
 
-  for (const level of ['low', 'medium', 'high']) {
-    const range = measureData[level as keyof typeof measureData];
-    if (range && value >= range.range[0] && value <= range.range[1]) {
-      return range.description;
-    }
-  }
+//   for (const level of ['low', 'medium', 'high']) {
+//     const range = measureData[level as keyof typeof measureData];
+//     if (range && value >= range.range[0] && value <= range.range[1]) {
+//       return range.description;
+//     }
+//   }
 
-  return '';
-}
+//   return '';
+// }
 
 // Get strength description
 export function getStrengthDescription(strength: number): {
