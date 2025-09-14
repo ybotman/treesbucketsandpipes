@@ -985,7 +985,7 @@ export default function AssessPage() {
 
                     // Concatenate all fullDesc texts including engagement
                     return [
-                      treeBand?.description || '',
+                      treeBand?.userDescription || treeBand?.description || '',
                       engagementBand?.fullDescription || '',
                       bucketBand?.fullDesc || '',
                       thicknessBand?.fullDesc || '',

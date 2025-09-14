@@ -28,6 +28,7 @@ export interface TreeSubtype {
   range: [number, number];
   altRange?: [number, number];
   description: string;
+  userDescription?: string;
   position: string;
 }
 

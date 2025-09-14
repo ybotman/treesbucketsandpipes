@@ -15,7 +15,8 @@
           "calculationRange": [88, 99],
           "altRange": [93.75, 100],
           "position": "bottom",
-          "description": "Bridges exploration with connection. You seek new experiences that bring people together. Your adventures are more meaningful when shared with others.",
+          "description": "Bridges exploration with connection, seeking new experiences that bring people together.",
+          "userDescription": "As a Root-Leaf blend, you seek new experiences that bring people together. Your adventures are more meaningful when shared with others. You bridge the need for novelty with deep connection.",
           "legacyRange": [88, 99]
         },
         {
@@ -25,7 +26,8 @@
           "range": [6.25, 18.75],
           "calculationRange": [1, 12],
           "position": "bottom-right",
-          "description": "Deep connection to community and harmony. You are motivated by belonging, peace, and creating safe spaces for others. Your 'bubble' centers on maintaining relationships and ensuring everyone feels included.",
+          "description": "Deep connection to community and harmony, motivated by belonging and creating safe spaces.",
+          "userDescription": "As a Root, you are motivated by belonging, peace, and creating safe spaces for others. Your 'bubble' centers on maintaining relationships and ensuring everyone feels included. You find fulfillment in nurturing harmony.",
           "legacyRange": [1, 12]
         },
         {
@@ -35,7 +37,8 @@
           "range": [18.75, 31.25],
           "calculationRange": [13, 24],
           "position": "right",
-          "description": "Balances connection with personal growth. You seek harmony while building your own capabilities. You develop skills that help you better support and connect with others.",
+          "description": "Balances connection with personal growth, seeking harmony while building capabilities.",
+          "userDescription": "As a Root-Trunk blend, you seek harmony while building your own capabilities. You develop skills that help you better support and connect with others. You balance community needs with personal mastery.",
           "legacyRange": [13, 24]
         },
         {
@@ -45,7 +48,8 @@
           "range": [31.25, 43.75],
           "calculationRange": [25, 37],
           "position": "top-right",
-          "description": "Focused on mastery and self-improvement. You are driven by the desire to become more capable and skilled. Deep knowledge and persistent practice define your approach to growth.",
+          "description": "Focused on mastery and self-improvement through deep knowledge and persistent practice.",
+          "userDescription": "As a Trunk, you are driven by the desire to become more capable and skilled. Deep knowledge and persistent practice define your approach to growth. You find satisfaction in continuous improvement and expertise.",
           "legacyRange": [25, 37]
         },
         {
@@ -55,7 +59,8 @@
           "range": [43.75, 56.25],
           "calculationRange": [38, 49],
           "position": "top",
-          "description": "Combines personal mastery with system impact. You develop expertise not just for yourself, but to create meaningful change in your organization or field.",
+          "description": "Combines personal mastery with system impact to create meaningful change.",
+          "userDescription": "As a Trunk-Branch blend, you develop expertise not just for yourself, but to create meaningful change in your organization or field. You bridge personal excellence with broader influence.",
           "legacyRange": [38, 49]
         },
         {
@@ -65,7 +70,8 @@
           "range": [56.25, 68.75],
           "calculationRange": [50, 62],
           "position": "top-left",
-          "description": "Driven by impact and contribution. You think in systems and focus on creating lasting change. Your motivation comes from seeing how your work affects the broader picture.",
+          "description": "Driven by impact and contribution, thinking in systems to create lasting change.",
+          "userDescription": "As a Branch, you think in systems and focus on creating lasting change. Your motivation comes from seeing how your work affects the broader picture. You're energized by legacy and meaningful impact.",
           "legacyRange": [50, 62]
         },
         {
@@ -75,7 +81,8 @@
           "range": [68.75, 81.25],
           "calculationRange": [63, 74],
           "position": "left",
-          "description": "Merges impact with exploration. You create change through innovation and new approaches. You're motivated by both making a difference and discovering new possibilities.",
+          "description": "Merges impact with exploration, creating change through innovation and new approaches.",
+          "userDescription": "As a Branch-Leaf blend, you create change through innovation and new approaches. You're motivated by both making a difference and discovering new possibilities. You combine strategic thinking with creative exploration.",
           "legacyRange": [63, 74]
         },
         {
@@ -85,7 +92,8 @@
           "range": [81.25, 93.75],
           "calculationRange": [75, 87],
           "position": "bottom-left",
-          "description": "Energized by novelty and discovery. You thrive on new experiences, fresh starts, and exploring uncharted territory. Change and variety fuel your motivation.",
+          "description": "Energized by novelty and discovery, thriving on new experiences and exploration.",
+          "userDescription": "As a Leaf, you thrive on new experiences, fresh starts, and exploring uncharted territory. Change and variety fuel your motivation. You find energy in the unknown and excitement in constant discovery.",
           "legacyRange": [75, 87]
         }
       ]
@@ -315,16 +323,16 @@
           "rangeLabel": "1-20",
           "title": "Quiet Contributor",
           "shortDesc": "Share rarely",
-          "fullDesc": "You let presence and focus speak more than words. Your strength is calm influence.",
+          "fullDesc": "You are very comfortable knowing and may not have a feeling of need to share your knowledge. You let presence and focus speak more than words, and your knowledge strength is calm influence.",
           "color": "#4A7C5915"
         },
         {
           "id": "selective_sharer",
           "range": [21, 40],
           "rangeLabel": "21-40",
-          "title": "Selective Sharer",
+          "title": "Private Sharer",
           "shortDesc": "Share when needed",
-          "fullDesc": "You contribute in context, balancing discretion with impact.",
+          "fullDesc": "You enjoy knowing what you know and selectively contribute in context. You balance your sharing and teaching with discretion based on the likely impact.  You prefer to work through ideas internally before sharing. Your power is in selective, impactful communication.",
           "color": "#4A7C5915"
         },
         {
@@ -333,7 +341,7 @@
           "rangeLabel": "41-60",
           "title": "Context Communicator",
           "shortDesc": "Adapt expression to situation",
-          "fullDesc": "You adjust sharing style to fit the audience. Your strength is alignment.",
+          "fullDesc": "As a context communicator, you are just as comfortable sharing as you are listening, and you likely adjust your sharing style to fit the audience. Your strength is alignment with your audience.",
           "color": "#4A7C5915"
         },
         {
@@ -342,7 +350,7 @@
           "rangeLabel": "61-80",
           "title": "Expressive Sharer",
           "shortDesc": "Share actively",
-          "fullDesc": "You voice ideas often to clarify and connect. Your strength is building trust.",
+          "fullDesc": "As an expressive sharer, you are quite comfortable in and sharing in groups.  You voice ideas often to clarify and connect. Your strength is building trust and engagement more than a single person at a time.",
           "color": "#4A7C5915"
         },
         {
@@ -351,7 +359,7 @@
           "rangeLabel": "81-100",
           "title": "Amplifier",
           "shortDesc": "Broadcast boldly",
-          "fullDesc": "You broadcast widely with conviction. Your strength is persuasion and inspiration.",
+          "fullDesc": "As an amplifying communicator, you broadcast widely with conviction.  You engage others and groups with your ideas and insights. You can think on your feet, and your strength is persuasion and inspiration. The more you can influence the better your impact is.",
           "color": "#4A7C5915"
         }
       ],
