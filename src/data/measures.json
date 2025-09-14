@@ -374,36 +374,57 @@
 
   "analytics": {
     "engagement": {
-      "displayName": "Engagement Scale",
-      "altName": "First Reaction",
-      "shortDescription": "Your first-reaction orientation to acting solo vs. engaging people.",
-      "fullDescription": "A bell-curve (cosine-shaped) 1–100 scale derived from Tree orientation (Roots/Leaves → people-first; Trunks/Branches → solo-first). It captures your first reaction to engage: independent to collaborative.",
-      "userLabel": "How You Engage First",
-      "scale": { "min": 1, "max": 100, "shape": "bell-curve" },
+      "displayName": "Engagement Model",
+      "altName": "Solo to Team Focus",
+      "shortDescription": "Your natural orientation from solo work to team engagement.",
+      "fullDescription": "A derived scale (1-100) from Tree score using cosine transformation. Shows whether you naturally start solo (goal-focused) or engage teams first (people-focused).",
+      "userLabel": "How You Engage",
+      "scaleLabels": { "left": "Solo-First", "right": "Team-First" },
       "bands": [
         {
-          "range": [1, 25],
-          "rangeLabel": "1-25",
-          "title": "Solo-First Processor",
-          "description": "You instinctively work alone first, gathering your thoughts before engaging others."
+          "id": "highly_solo",
+          "range": [1, 20],
+          "rangeLabel": "1-20",
+          "title": "Highly Solo",
+          "shortDesc": "Work alone, think alone",
+          "fullDesc": "You strongly prefer working independently. You process best in solitude and engage others only when necessary.",
+          "color": "#8B4513"
         },
         {
-          "range": [25, 50],
-          "rangeLabel": "25-50",
-          "title": "Independent Starter",
-          "description": "You begin independently but quickly integrate others as needed."
+          "id": "solo_leaning",
+          "range": [21, 40],
+          "rangeLabel": "21-40",
+          "title": "Solo-Leaning",
+          "shortDesc": "Start solo, engage selectively",
+          "fullDesc": "You begin tasks independently but bring in others strategically. Your strength is focused execution.",
+          "color": "#A0522D"
         },
         {
-          "range": [50, 75],
-          "rangeLabel": "50-75",
-          "title": "Flexible Engager",
-          "description": "You adapt your engagement style based on context, equally comfortable solo or with others."
+          "id": "balanced_engagement",
+          "range": [41, 60],
+          "rangeLabel": "41-60",
+          "title": "Balanced Engagement",
+          "shortDesc": "Flex between solo and team",
+          "fullDesc": "You adapt fluidly between independent work and collaboration. Your strength is versatility.",
+          "color": "#CD853F"
         },
         {
-          "range": [75, 100],
-          "rangeLabel": "75-100",
-          "title": "People-First Engager",
-          "description": "Your first instinct is to connect with others. You find energy in immediate collaboration."
+          "id": "team_leaning",
+          "range": [61, 80],
+          "rangeLabel": "61-80",
+          "title": "Team-Leaning",
+          "shortDesc": "Prefer collaboration, can work solo",
+          "fullDesc": "You naturally seek input and collaboration but can work independently when needed. Your strength is inclusive problem-solving.",
+          "color": "#4682B4"
+        },
+        {
+          "id": "highly_collaborative",
+          "range": [81, 100],
+          "rangeLabel": "81-100",
+          "title": "Highly Collaborative",
+          "shortDesc": "Teams first, always engage",
+          "fullDesc": "You thrive in group settings and actively seek collaboration. You find energy and clarity through interaction with others.",
+          "color": "#1E90FF"
         }
       ]
     },
