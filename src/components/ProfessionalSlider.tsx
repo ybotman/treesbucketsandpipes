@@ -95,10 +95,28 @@ export default function ProfessionalSlider({
       background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
       borderRadius: 3,
       boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-      userSelect: 'none'
+      userSelect: 'none',
+      position: 'relative'
     }}>
+      {/* Value display in upper right */}
+      <Box sx={{
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        bgcolor: 'white',
+        border: `2px solid ${color}`,
+        borderRadius: 1,
+        px: 2,
+        py: 1,
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color }}>
+          {localValue}
+        </Typography>
+      </Box>
+
       {/* Header */}
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 3, pr: 8 }}>
         <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 0.5 }}>
           {measureData.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measureData.altName})</span>
         </Typography>
@@ -109,98 +127,92 @@ export default function ProfessionalSlider({
 
       {/* Slider Container */}
       <Box sx={{ position: 'relative', mb: 4 }}>
-        {/* Track with range bands */}
+        {/* Track with gradient */}
         <Box
           ref={trackRef}
           sx={{
             position: 'relative',
-            height: 12,
-            background: 'linear-gradient(90deg, #f0f0f0 0%, #f0f0f0 30%, #e0e0e0 30%, #e0e0e0 70%, #d0d0d0 70%, #d0d0d0 100%)',
-            borderRadius: 6,
-            boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)',
+            height: 24,
+            background: `linear-gradient(90deg,
+              ${color}20 0%,
+              ${color}40 25%,
+              ${color}60 50%,
+              ${color}80 75%,
+              ${color} 100%)`,
+            borderRadius: 12,
+            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15)',
             cursor: isDragging ? 'grabbing' : 'grab',
-            my: 4
+            my: 5
           }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
         >
-          {/* Scale marks - show 10 major marks */}
-          {[...Array(11)].map((_, i) => {
-            const markPercentage = (i / 10) * 100;
-            const markValue = min + (i / 10) * (max - min);
+          {/* Scale marks - show major marks at 0, 25, 50, 75, 100 */}
+          {[0, 25, 50, 75, 100].map((val) => {
+            const markPercentage = val;
+            const markValue = min + (val / 100) * (max - min);
             return (
-              <Box key={i} sx={{ position: 'absolute', left: `${markPercentage}%` }}>
+              <Box key={val} sx={{ position: 'absolute', left: `${markPercentage}%` }}>
                 <Box
                   sx={{
                     position: 'absolute',
                     left: '50%',
                     top: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: i % 5 === 0 ? 3 : 1,
-                    height: i % 5 === 0 ? 20 : 12,
-                    bgcolor: i % 5 === 0 ? '#999' : '#ccc',
+                    width: 2,
+                    height: 30,
+                    bgcolor: 'rgba(255,255,255,0.8)',
                     zIndex: 1
                   }}
                 />
-                {i % 5 === 0 && (
-                  <Typography
-                    sx={{
-                      position: 'absolute',
-                      left: '50%',
-                      top: 25,
-                      transform: 'translateX(-50%)',
-                      fontSize: 10,
-                      color: '#999',
-                      userSelect: 'none'
-                    }}
-                  >
-                    {Math.round(markValue)}
-                  </Typography>
-                )}
+                <Typography
+                  sx={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: 35,
+                    transform: 'translateX(-50%)',
+                    fontSize: 11,
+                    fontWeight: val === 0 || val === 100 ? 'bold' : 'normal',
+                    color: '#666',
+                    userSelect: 'none'
+                  }}
+                >
+                  {Math.round(markValue)}
+                </Typography>
               </Box>
             );
           })}
 
-          {/* Thumb */}
+          {/* Vertical bar indicator */}
           <Box
             sx={{
               position: 'absolute',
               left: `${percentage}%`,
               top: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 28,
-              height: 28,
-              bgcolor: color,
-              borderRadius: '50%',
-              boxShadow: isDragging ? '0 0 0 12px rgba(0,0,0,0.1)' : '0 2px 8px rgba(0,0,0,0.3)',
-              border: '3px solid white',
+              width: 6,
+              height: 40,
+              bgcolor: 'white',
+              borderRadius: 3,
+              boxShadow: isDragging ? '0 0 12px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.2)',
+              border: `2px solid ${color}`,
               zIndex: 3,
               transition: isDragging ? 'none' : 'all 0.3s ease',
-              cursor: isDragging ? 'grabbing' : 'grab'
+              cursor: isDragging ? 'grabbing' : 'grab',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 2,
+                height: 20,
+                bgcolor: color,
+                borderRadius: 1
+              }
             }}
           />
 
-          {/* Value indicator while dragging */}
-          {isDragging && (
-            <Box
-              sx={{
-                position: 'absolute',
-                left: `${percentage}%`,
-                top: -35,
-                transform: 'translateX(-50%)',
-                px: 1.5,
-                py: 0.5,
-                bgcolor: '#333',
-                color: 'white',
-                borderRadius: 1,
-                fontSize: 14,
-                fontWeight: 'bold',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-              }}
-            >
-              {localValue}
-            </Box>
-          )}
         </Box>
 
         {/* Labels */}

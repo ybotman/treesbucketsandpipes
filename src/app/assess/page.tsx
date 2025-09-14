@@ -33,12 +33,9 @@ import {
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
-import descriptions from '@/data/descriptions.json';
-import measuresCompleteData from '@/data/measures_complete.json';
-import type { MeasuresComplete } from '@/types/measures';
-
-const fullData = measuresCompleteData as unknown as MeasuresComplete;
-const measuresData = fullData.measures;
+import measuresData from '@/data/measures.json';
+// Direct access to measures
+const measures = measuresData.measures;
 import {
   processQuestionResponses,
   calculateInteractionArchetype,
@@ -173,6 +170,39 @@ export default function AssessPage() {
   const handleManualScoreChange = (measure: keyof typeof manualScores, value: number) => {
     setManualScores((prev) => ({ ...prev, [measure]: value }));
     setScoreSource('manual');
+  };
+
+  // Animated value change for smooth transitions
+  const animateValueChange = (
+    measure: keyof typeof manualScores,
+    targetValue: number,
+    duration: number = 300
+  ) => {
+    const startValue = manualScores[measure];
+    const startTime = Date.now();
+    const diff = targetValue - startValue;
+
+    const animate = () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Easing function for smooth animation
+      const easeInOutCubic = (t: number) => {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      };
+
+      const easedProgress = easeInOutCubic(progress);
+      const currentValue = Math.round(startValue + diff * easedProgress);
+
+      handleManualScoreChange(measure, currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
   };
 
   const handleCalculateFromQuestions = () => {
@@ -502,10 +532,10 @@ export default function AssessPage() {
                 {/* Header */}
                 <Box sx={{ mb: 3 }}>
                   <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 0.5 }}>
-                    {measuresData.tree.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measuresData.tree.altName})</span>
+                    {measures.tree.displayName} <span style={{ fontWeight: 'normal', fontSize: '0.9em', color: '#666' }}>({measures.tree.altName})</span>
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#666' }}>
-                    {measuresData.tree.shortDescription}
+                    {measures.tree.shortDescription}
                   </Typography>
                 </Box>
 
@@ -544,7 +574,7 @@ export default function AssessPage() {
                           // Move 11 points back (roughly one subtype)
                           let newValue = manualScores.tree - 11;
                           if (newValue < 1) newValue = 100 + newValue; // Wrap around
-                          handleManualScoreChange('tree', newValue);
+                          animateValueChange('tree', newValue, 400); // Slower for bigger jumps
                         }}
                         sx={{
                           minWidth: 40,
@@ -563,7 +593,7 @@ export default function AssessPage() {
                         onClick={() => {
                           // Move 1 point back
                           const newValue = manualScores.tree === 1 ? 100 : manualScores.tree - 1;
-                          handleManualScoreChange('tree', newValue);
+                          animateValueChange('tree', newValue, 200); // Faster for single steps
                         }}
                         sx={{
                           minWidth: 32,
@@ -585,7 +615,7 @@ export default function AssessPage() {
                         onClick={() => {
                           // Move 1 point forward
                           const newValue = manualScores.tree === 100 ? 1 : manualScores.tree + 1;
-                          handleManualScoreChange('tree', newValue);
+                          animateValueChange('tree', newValue, 200); // Faster for single steps
                         }}
                         sx={{
                           minWidth: 32,
@@ -605,7 +635,7 @@ export default function AssessPage() {
                           // Move 11 points forward (roughly one subtype)
                           let newValue = manualScores.tree + 11;
                           if (newValue > 100) newValue = newValue - 100; // Wrap around
-                          handleManualScoreChange('tree', newValue);
+                          animateValueChange('tree', newValue, 400); // Slower for bigger jumps
                         }}
                         sx={{
                           minWidth: 40,
@@ -656,7 +686,7 @@ export default function AssessPage() {
                         {(() => {
                           const treeValue = manualScores.tree;
                           // Get the matching subtype description from the JSON
-                          const subtype = measuresData.tree.subtypes.find(st => {
+                          const subtype = measures.tree.subtypes.find(st => {
                             if (st.id === 'root_leaf') {
                               return (treeValue >= st.range[0] && treeValue <= st.range[1]) ||
                                      (st.altRange && treeValue >= st.altRange[0] && treeValue <= st.altRange[1]);
@@ -673,7 +703,7 @@ export default function AssessPage() {
 
               {/* Bucket */}
               <ProfessionalSlider
-                measureData={measuresData.bucket}
+                measureData={measures.bucket}
                 value={manualScores.bucket}
                 onChange={(value) => handleManualScoreChange('bucket', value)}
                 min={1}
@@ -683,7 +713,7 @@ export default function AssessPage() {
 
               {/* Thickness */}
               <ProfessionalSlider
-                measureData={measuresData.thickness}
+                measureData={measures.thickness}
                 value={manualScores.thickness}
                 onChange={(value) => handleManualScoreChange('thickness', value)}
                 min={1}
@@ -693,7 +723,7 @@ export default function AssessPage() {
 
               {/* Input */}
               <ProfessionalSlider
-                measureData={measuresData.input}
+                measureData={measures.input}
                 value={manualScores.input}
                 onChange={(value) => handleManualScoreChange('input', value)}
                 min={1}
@@ -703,7 +733,7 @@ export default function AssessPage() {
 
               {/* Output */}
               <ProfessionalSlider
-                measureData={measuresData.output}
+                measureData={measures.output}
                 value={manualScores.output}
                 onChange={(value) => handleManualScoreChange('output', value)}
                 min={1}
@@ -804,7 +834,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Knowledge Bucket"
                     value={finalScores.bucket}
-                    measureData={measuresData.bucket}
+                    measureData={measures.bucket}
                     color="#5B8BA0"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.bucket : []}
                   />
@@ -822,7 +852,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Resilience"
                     value={finalScores.thickness}
-                    measureData={measuresData.thickness}
+                    measureData={measures.thickness}
                     color="#7BA098"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.thickness : []}
                   />
@@ -840,7 +870,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Gathering"
                     value={finalScores.input}
-                    measureData={measuresData.input}
+                    measureData={measures.input}
                     color="#8B6B47"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.input : []}
                   />
@@ -858,7 +888,7 @@ export default function AssessPage() {
                   <EnhancedGauge
                     title="Sharing"
                     value={finalScores.output}
-                    measureData={measuresData.output}
+                    measureData={measures.output}
                     color="#A08B47"
                     questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.output : []}
                   />
@@ -921,22 +951,22 @@ export default function AssessPage() {
                   {(() => {
                     // Find the active band for Tree
                     const treeValue = typeof finalScores.tree === 'object' ? finalScores.tree.score : finalScores.tree;
-                    const treeBand = measuresData.tree.subtypes.find(st => {
+                    const treeBand = measures.tree.subtypes.find(st => {
                       if (st.altRange && treeValue >= st.altRange[0]) return true;
                       return treeValue >= st.range[0] && treeValue <= st.range[1];
                     });
 
                     // Find active bands for other measures
-                    const bucketBand = measuresData.bucket.bands.find(b =>
+                    const bucketBand = measures.bucket.bands.find(b =>
                       finalScores.bucket >= b.range[0] && finalScores.bucket <= b.range[1]
                     );
-                    const thicknessBand = measuresData.thickness.bands.find(b =>
+                    const thicknessBand = measures.thickness.bands.find(b =>
                       finalScores.thickness >= b.range[0] && finalScores.thickness <= b.range[1]
                     );
-                    const inputBand = measuresData.input.bands.find(b =>
+                    const inputBand = measures.input.bands.find(b =>
                       finalScores.input >= b.range[0] && finalScores.input <= b.range[1]
                     );
-                    const outputBand = measuresData.output.bands.find(b =>
+                    const outputBand = measures.output.bands.find(b =>
                       finalScores.output >= b.range[0] && finalScores.output <= b.range[1]
                     );
 

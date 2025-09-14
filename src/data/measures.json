@@ -1,0 +1,470 @@
+{
+  "measures": {
+    "tree": {
+      "displayName": "Tree",
+      "altName": "Core Motivation",
+      "shortDescription": "What fundamentally drives you - from harmony to mastery to impact to discovery",
+      "fullDescription": "The Tree represents your core motivation - what you're fundamentally wired to seek. It ranges from Root (harmony/belonging) through Trunk (mastery/growth) and Branch (impact/legacy) to Leaf (novelty/discovery).",
+      "userLabel": "Your Core Drive",
+      "subtypes": [
+        {
+          "id": "root_leaf",
+          "name": "Root-Leaf",
+          "displayName": "Root-Leaf",
+          "range": [93.75, 6.25],
+          "calculationRange": [88, 99],
+          "altRange": [93.75, 100],
+          "position": "bottom",
+          "description": "Bridges exploration with connection. You seek new experiences that bring people together. Your adventures are more meaningful when shared with others.",
+          "legacyRange": [88, 99]
+        },
+        {
+          "id": "root",
+          "name": "Root",
+          "displayName": "Root",
+          "range": [6.25, 18.75],
+          "calculationRange": [1, 12],
+          "position": "bottom-right",
+          "description": "Deep connection to community and harmony. You are motivated by belonging, peace, and creating safe spaces for others. Your 'bubble' centers on maintaining relationships and ensuring everyone feels included.",
+          "legacyRange": [1, 12]
+        },
+        {
+          "id": "root_trunk",
+          "name": "Root-Trunk",
+          "displayName": "Root-Trunk",
+          "range": [18.75, 31.25],
+          "calculationRange": [13, 24],
+          "position": "right",
+          "description": "Balances connection with personal growth. You seek harmony while building your own capabilities. You develop skills that help you better support and connect with others.",
+          "legacyRange": [13, 24]
+        },
+        {
+          "id": "trunk",
+          "name": "Trunk",
+          "displayName": "Trunk",
+          "range": [31.25, 43.75],
+          "calculationRange": [25, 37],
+          "position": "top-right",
+          "description": "Focused on mastery and self-improvement. You are driven by the desire to become more capable and skilled. Deep knowledge and persistent practice define your approach to growth.",
+          "legacyRange": [25, 37]
+        },
+        {
+          "id": "trunk_branch",
+          "name": "Trunk-Branch",
+          "displayName": "Trunk-Branch",
+          "range": [43.75, 56.25],
+          "calculationRange": [38, 49],
+          "position": "top",
+          "description": "Combines personal mastery with system impact. You develop expertise not just for yourself, but to create meaningful change in your organization or field.",
+          "legacyRange": [38, 49]
+        },
+        {
+          "id": "branch",
+          "name": "Branch",
+          "displayName": "Branch",
+          "range": [56.25, 68.75],
+          "calculationRange": [50, 62],
+          "position": "top-left",
+          "description": "Driven by impact and contribution. You think in systems and focus on creating lasting change. Your motivation comes from seeing how your work affects the broader picture.",
+          "legacyRange": [50, 62]
+        },
+        {
+          "id": "branch_leaf",
+          "name": "Branch-Leaf",
+          "displayName": "Branch-Leaf",
+          "range": [68.75, 81.25],
+          "calculationRange": [63, 74],
+          "position": "left",
+          "description": "Merges impact with exploration. You create change through innovation and new approaches. You're motivated by both making a difference and discovering new possibilities.",
+          "legacyRange": [63, 74]
+        },
+        {
+          "id": "leaf",
+          "name": "Leaf",
+          "displayName": "Leaf",
+          "range": [81.25, 93.75],
+          "calculationRange": [75, 87],
+          "position": "bottom-left",
+          "description": "Energized by novelty and discovery. You thrive on new experiences, fresh starts, and exploring uncharted territory. Change and variety fuel your motivation.",
+          "legacyRange": [75, 87]
+        }
+      ]
+    },
+
+    "bucket": {
+      "displayName": "Bucket",
+      "altName": "Gut / Confidence",
+      "shortDescription": "How much you rely on your inner sense of knowing vs. external sources",
+      "fullDescription": "The Bucket represents your decision-making style - whether you trust internal intuition or seek external validation. It reflects how you form and hold your truths.",
+      "userLabel": "Your Decision Style",
+      "scaleLabels": { "left": "External", "right": "Internal" },
+      "bands": [
+        {
+          "id": "external_first",
+          "range": [1, 20],
+          "rangeLabel": "1-20",
+          "title": "External-First Gut",
+          "shortDesc": "Rely on outside input before acting",
+          "fullDesc": "You begin with evidence and validation from others. Your strength is thoroughness and humility.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "external_leaning",
+          "range": [21, 40],
+          "rangeLabel": "21-40",
+          "title": "External-Leaning Gut",
+          "shortDesc": "Prefer data, with some intuition",
+          "fullDesc": "You lean on research and external sources, but begin allowing instinct a role. Your strength is pragmatic judgment.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "balanced",
+          "range": [41, 60],
+          "rangeLabel": "41-60",
+          "title": "Balanced Gut",
+          "shortDesc": "Balance instinct and evidence",
+          "fullDesc": "You weigh gut and data evenly. Your strength is clarity and discernment.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "inner_leaning",
+          "range": [61, 80],
+          "rangeLabel": "61-80",
+          "title": "Inner-Leaning Gut",
+          "shortDesc": "Trust gut with backup",
+          "fullDesc": "You start with intuition, validating as needed. Your strength is confident flexibility.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "intuitive_first",
+          "range": [81, 100],
+          "rangeLabel": "81-100",
+          "title": "Intuitive-First Gut",
+          "shortDesc": "Rely strongly on gut",
+          "fullDesc": "You act quickly from conviction and self-trust. Your strength is decisive speed.",
+          "color": "#4A7C5915"
+        }
+      ],
+      "legacyLevels": {
+        "low": {
+          "range": [1, 33],
+          "description": "Single-bucket focus. You prefer deep, concentrated engagement in one area at a time. Depth over breadth defines your approach."
+        },
+        "medium": {
+          "range": [34, 66],
+          "description": "Balanced buckets. You manage a few key areas simultaneously, finding the sweet spot between focus and variety."
+        },
+        "high": {
+          "range": [67, 99],
+          "description": "Multi-bucket juggler. You thrive with many simultaneous interests and activities. Variety energizes you."
+        }
+      }
+    },
+
+    "thickness": {
+      "displayName": "Bucket Thickness",
+      "altName": "Persistence to Reassessment",
+      "shortDescription": "The strength to which you hold on to what you know, when contradictions appear",
+      "fullDescription": "Thickness measures how firmly you hold your truths under pressure. It reflects your willingness to change core beliefs when presented with contradictory evidence.",
+      "userLabel": "Your Flexibility",
+      "scaleLabels": { "left": "Thin", "right": "Thick" },
+      "bands": [
+        {
+          "id": "open_walls",
+          "range": [1, 20],
+          "rangeLabel": "1-20",
+          "title": "Open Walls",
+          "shortDesc": "Quickly revise truths",
+          "fullDesc": "You adapt easily when proven wrong. Your strength is openness and agility.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "flexible_walls",
+          "range": [21, 40],
+          "rangeLabel": "21-40",
+          "title": "Flexible Walls",
+          "shortDesc": "Adjust with reasonable evidence",
+          "fullDesc": "You update many truths but keep a few steady anchors. Your strength is balance.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "balanced_walls",
+          "range": [41, 60],
+          "rangeLabel": "41-60",
+          "title": "Balanced Walls",
+          "shortDesc": "Hold some truths, reassess others",
+          "fullDesc": "You stay open yet firm depending on context. Your strength is discernment.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "steady_walls",
+          "range": [61, 80],
+          "rangeLabel": "61-80",
+          "title": "Steady Walls",
+          "shortDesc": "Commit until strong evidence",
+          "fullDesc": "You stay with your truths unless strong disproof emerges. Your strength is persistence.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "strong_walls",
+          "range": [81, 100],
+          "rangeLabel": "81-100",
+          "title": "Strong Walls",
+          "shortDesc": "Hold tightly to truths",
+          "fullDesc": "You resist change strongly, offering stability and resilience.",
+          "color": "#4A7C5915"
+        }
+      ],
+      "legacyLevels": {
+        "low": {
+          "range": [1, 33],
+          "description": "Permeable boundaries. You deeply feel and absorb the energy around you. Work and life blend together naturally."
+        },
+        "medium": {
+          "range": [34, 66],
+          "description": "Flexible boundaries. You can adjust your walls as needed, sometimes open, sometimes protected."
+        },
+        "high": {
+          "range": [67, 99],
+          "description": "Strong boundaries. You maintain clear separation between different areas of life. You stay centered regardless of external chaos."
+        }
+      }
+    },
+
+    "input": {
+      "displayName": "Input Pipe",
+      "altName": "Learning / Gathering",
+      "shortDescription": "How much outside information you prefer before updating your bucket",
+      "fullDescription": "The Input Pipe represents your learning style - how much information you gather before forming or changing opinions. It reflects your appetite for external perspectives.",
+      "userLabel": "Your Learning Style",
+      "scaleLabels": { "left": "Low", "right": "High" },
+      "bands": [
+        {
+          "id": "action_first",
+          "range": [1, 20],
+          "rangeLabel": "1-20",
+          "title": "Action-First",
+          "shortDesc": "Learn by doing",
+          "fullDesc": "You act with little external input; speed and courage are your strengths.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "experience_led",
+          "range": [21, 40],
+          "rangeLabel": "21-40",
+          "title": "Experience-Led",
+          "shortDesc": "Rely on experience with some input",
+          "fullDesc": "You move forward, adding a few outside views. Your strength is pragmatism.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "mixed_inputs",
+          "range": [41, 60],
+          "rangeLabel": "41-60",
+          "title": "Mixed Inputs",
+          "shortDesc": "Balance action and research",
+          "fullDesc": "You combine firsthand experience with research. Your strength is efficiency.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "research_led",
+          "range": [61, 80],
+          "rangeLabel": "61-80",
+          "title": "Research-Led",
+          "shortDesc": "Seek multiple perspectives",
+          "fullDesc": "You gather diverse sources before acting. Your strength is preparedness.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "broad_collector",
+          "range": [81, 100],
+          "rangeLabel": "81-100",
+          "title": "Broad Collector",
+          "shortDesc": "Constantly seek input",
+          "fullDesc": "You cast a wide net, curious and adaptable.",
+          "color": "#4A7C5915"
+        }
+      ],
+      "legacyLevels": {
+        "low": {
+          "range": [1, 33],
+          "description": "Selective input. You prefer targeted, relevant information when you need it. Quality over quantity in learning."
+        },
+        "medium": {
+          "range": [34, 66],
+          "description": "Moderate input. You balance active learning with processing time. You seek information with purpose."
+        },
+        "high": {
+          "range": [67, 99],
+          "description": "Constant input. You are a continuous learner, always gathering new information and perspectives. Learning is breathing for you."
+        }
+      }
+    },
+
+    "output": {
+      "displayName": "Output Pipe",
+      "altName": "Sharing / Teaching",
+      "shortDescription": "How strongly you feel the need to share what you know",
+      "fullDescription": "The Output Pipe represents your communication style - how much you share your thoughts and knowledge with others. It reflects your drive to influence and teach.",
+      "userLabel": "Your Sharing Style",
+      "scaleLabels": { "left": "Low", "right": "High" },
+      "bands": [
+        {
+          "id": "quiet_contributor",
+          "range": [1, 20],
+          "rangeLabel": "1-20",
+          "title": "Quiet Contributor",
+          "shortDesc": "Share rarely",
+          "fullDesc": "You let presence and focus speak more than words. Your strength is calm influence.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "selective_sharer",
+          "range": [21, 40],
+          "rangeLabel": "21-40",
+          "title": "Selective Sharer",
+          "shortDesc": "Share when needed",
+          "fullDesc": "You contribute in context, balancing discretion with impact.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "context_communicator",
+          "range": [41, 60],
+          "rangeLabel": "41-60",
+          "title": "Context Communicator",
+          "shortDesc": "Adapt expression to situation",
+          "fullDesc": "You adjust sharing style to fit the audience. Your strength is alignment.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "expressive_sharer",
+          "range": [61, 80],
+          "rangeLabel": "61-80",
+          "title": "Expressive Sharer",
+          "shortDesc": "Share actively",
+          "fullDesc": "You voice ideas often to clarify and connect. Your strength is building trust.",
+          "color": "#4A7C5915"
+        },
+        {
+          "id": "amplifier",
+          "range": [81, 100],
+          "rangeLabel": "81-100",
+          "title": "Amplifier",
+          "shortDesc": "Broadcast boldly",
+          "fullDesc": "You broadcast widely with conviction. Your strength is persuasion and inspiration.",
+          "color": "#4A7C5915"
+        }
+      ],
+      "legacyLevels": {
+        "low": {
+          "range": [1, 33],
+          "description": "Private processor. You prefer to work through ideas internally before sharing. Your power is in selective, impactful communication."
+        },
+        "medium": {
+          "range": [34, 66],
+          "description": "Selective sharer. You share when it adds value, balancing expression with listening."
+        },
+        "high": {
+          "range": [67, 99],
+          "description": "Natural broadcaster. You process by sharing, teaching, and discussing. Expression is how you clarify and contribute."
+        }
+      }
+    }
+  },
+
+  "analytics": {
+    "engagement": {
+      "displayName": "Engagement Scale",
+      "altName": "First Reaction",
+      "shortDescription": "Your first-reaction orientation to acting solo vs. engaging people.",
+      "fullDescription": "A bell-curve (cosine-shaped) 1–100 scale derived from Tree orientation (Roots/Leaves → people-first; Trunks/Branches → solo-first). It captures your first reaction to engage: independent to collaborative.",
+      "userLabel": "How You Engage First",
+      "scale": { "min": 1, "max": 100, "shape": "bell-curve" },
+      "bands": [
+        {
+          "range": [1, 25],
+          "rangeLabel": "1-25",
+          "title": "Solo-First Processor",
+          "description": "You instinctively work alone first, gathering your thoughts before engaging others."
+        },
+        {
+          "range": [25, 50],
+          "rangeLabel": "25-50",
+          "title": "Independent Starter",
+          "description": "You begin independently but quickly integrate others as needed."
+        },
+        {
+          "range": [50, 75],
+          "rangeLabel": "50-75",
+          "title": "Flexible Engager",
+          "description": "You adapt your engagement style based on context, equally comfortable solo or with others."
+        },
+        {
+          "range": [75, 100],
+          "rangeLabel": "75-100",
+          "title": "People-First Engager",
+          "description": "Your first instinct is to connect with others. You find energy in immediate collaboration."
+        }
+      ]
+    },
+
+    "interaction": {
+      "displayName": "Interaction Archetypes",
+      "altName": "Tree × Output Grid",
+      "shortDescription": "Five archetypes from People vs. Fact (Tree) and Narrow vs. Wide (Output Pipe).",
+      "fullDescription": "A grid mapping Tree orientation (people-focused: Roots/Leaves; fact-focused: Trunks/Branches) against Output Pipe (narrow→wide). Includes a center integration type.",
+      "type": "grid",
+      "axes": {
+        "x": { "name": "Tree Orientation", "left": "People", "right": "Fact" },
+        "y": { "name": "Output Pipe", "bottom": "Narrow", "top": "Wide" }
+      },
+      "archetypes": [
+        {
+          "id": "harmonizer",
+          "name": "Harmonizer",
+          "quadrant": "people-narrow",
+          "description": "You focus on deep, meaningful connections with a select few. Quality over quantity in relationships."
+        },
+        {
+          "id": "connector",
+          "name": "Connector",
+          "quadrant": "people-wide",
+          "description": "You build bridges between people and groups. Natural networker and community builder."
+        },
+        {
+          "id": "specialist",
+          "name": "Specialist",
+          "quadrant": "fact-narrow",
+          "description": "Deep expertise shared selectively. You master your domain and guide those who seek your knowledge."
+        },
+        {
+          "id": "broadcaster",
+          "name": "Broadcaster",
+          "quadrant": "fact-wide",
+          "description": "You spread knowledge and insights widely. Natural teacher and thought leader."
+        },
+        {
+          "id": "integrator",
+          "name": "Integrator",
+          "quadrant": "center",
+          "description": "You balance all dimensions fluidly. Adaptive to context and needs."
+        }
+      ]
+    }
+  },
+
+  "strengthDescriptions": {
+    "low": {
+      "title": "Emerging",
+      "description": "This dimension is developing. You're exploring this aspect of yourself."
+    },
+    "medium": {
+      "title": "Balanced",
+      "description": "This dimension is well-integrated. You can flex this muscle when needed."
+    },
+    "high": {
+      "title": "Strong",
+      "description": "This dimension is a core strength. It's a natural and powerful part of who you are."
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import descriptions from '@/data/descriptions.json';
+import measures from '@/data/measures.json';
 
 // Types
 export interface TreeScores {
@@ -80,18 +80,18 @@ export function calculateTreeScore(scores: TreeScores): TreeResult {
   
   // Determine subtype based on score
   const subtype = getTreeSubtype(score);
-  const subtypeData = descriptions.treeSubtypes[subtype as keyof typeof descriptions.treeSubtypes];
-  
+  const subtypeData = measures.measures.tree.subtypes.find(st => st.id === subtype);
+
   // Normalize strength to 0-100 scale
   // Max possible strength is when all 4 scores are 99 in same direction = 99 * 2 = 198
   // More realistic max is around 99 * sqrt(2) ≈ 140 for adjacent types
   const normalizedStrength = Math.min(100, (strength / 140) * 100);
-  
+
   return {
     score,
     strength: Math.round(normalizedStrength),
     subtype,
-    subtypeName: subtypeData.name
+    subtypeName: subtypeData?.name || 'Unknown'
   };
 }
 
@@ -199,16 +199,16 @@ export function calculateInteractionArchetype(
 
 // Get description for a measure value
 export function getMeasureDescription(measure: string, value: number): string {
-  const measureData = descriptions.measures[measure as keyof typeof descriptions.measures];
+  const measureData = measures.measures[measure as keyof typeof measures.measures]?.legacyLevels;
   if (!measureData) return '';
-  
+
   for (const level of ['low', 'medium', 'high']) {
     const range = measureData[level as keyof typeof measureData];
-    if (value >= range.range[0] && value <= range.range[1]) {
+    if (range && value >= range.range[0] && value <= range.range[1]) {
       return range.description;
     }
   }
-  
+
   return '';
 }
 
@@ -217,20 +217,23 @@ export function getStrengthDescription(strength: number): {
   label: string;
   description: string;
 } {
-  for (const level of ['high', 'medium', 'low']) {
-    const desc = descriptions.strengthDescriptions[level as keyof typeof descriptions.strengthDescriptions];
-    if (strength >= desc.range[0] && strength <= desc.range[1]) {
-      return {
-        label: desc.label,
-        description: desc.description
-      };
-    }
+  // Simplified strength descriptions without ranges
+  if (strength >= 70) {
+    return {
+      label: measures.strengthDescriptions.high.title,
+      description: measures.strengthDescriptions.high.description
+    };
+  } else if (strength >= 40) {
+    return {
+      label: measures.strengthDescriptions.medium.title,
+      description: measures.strengthDescriptions.medium.description
+    };
+  } else {
+    return {
+      label: measures.strengthDescriptions.low.title,
+      description: measures.strengthDescriptions.low.description
+    };
   }
-  
-  return {
-    label: 'Balanced',
-    description: 'Your motivational pattern is balanced across types.'
-  };
 }
 
 // Process all question responses into final scores
