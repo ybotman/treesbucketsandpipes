@@ -20,6 +20,9 @@ import {
   Grid,
   Alert,
   Switch,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
 import {
   QuizOutlined,
@@ -29,7 +32,8 @@ import {
   SummarizeOutlined,
   RefreshOutlined,
   ClearOutlined,
-  AnalyticsOutlined
+  AnalyticsOutlined,
+  ExpandMoreOutlined
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import questions from '@/data/questions.json';
@@ -254,7 +258,6 @@ export default function AssessPage() {
         <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)}>
           <Tab icon={<QuizOutlined />} label="Questions" />
           <Tab icon={<TuneOutlined />} label="Manual" />
-          <Tab icon={<SummarizeOutlined />} label="Summary" />
           <Tab icon={<AnalyticsOutlined />} label="Analytics" />
         </Tabs>
 
@@ -369,20 +372,112 @@ export default function AssessPage() {
                         </Box>
                       </Box>
                       
-                      <Slider
-                        value={tempQuestionValue || 50}
-                        onChange={(_, value) => setTempQuestionValue(value as number)}
-                        min={questions.scale.min}
-                        max={questions.scale.max}
-                        marks={questions.scale.markers}
-                        valueLabelDisplay="auto"
-                        sx={{ 
-                          mb: 4,
-                          '& .MuiSlider-thumb': {
-                            display: tempQuestionValue === null ? 'none' : 'block'
-                          }
-                        }}
-                      />
+                      {/* Professional Slider Style */}
+                      <Box sx={{
+                        position: 'relative',
+                        mb: 4,
+                        p: 3,
+                        background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                        borderRadius: 3,
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
+                      }}>
+                        {/* Value display in upper right */}
+                        <Box sx={{
+                          position: 'absolute',
+                          top: 16,
+                          right: 16,
+                          bgcolor: 'white',
+                          border: `2px solid #4A7C59`,
+                          borderRadius: 1,
+                          px: 2,
+                          py: 1,
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        }}>
+                          <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#4A7C59' }}>
+                            {tempQuestionValue || '--'}
+                          </Typography>
+                        </Box>
+
+                        {/* Track with gradient - matching Manual tab style */}
+                        <Box sx={{ position: 'relative', mt: 3 }}>
+                          <Slider
+                            value={tempQuestionValue || 50}
+                            onChange={(_, value) => setTempQuestionValue(value as number)}
+                            min={questions.scale.min}
+                            max={questions.scale.max}
+                            valueLabelDisplay="off"
+                            sx={{
+                              '& .MuiSlider-thumb': {
+                                display: tempQuestionValue === null ? 'none' : 'block',
+                                bgcolor: 'white',
+                                border: '2px solid #4A7C59',
+                                width: 6,
+                                height: 40,
+                                borderRadius: '3px',
+                                '&:hover': {
+                                  boxShadow: '0 0 12px rgba(74, 124, 89, 0.3)'
+                                },
+                                '&::after': {
+                                  content: '""',
+                                  position: 'absolute',
+                                  left: '50%',
+                                  top: '50%',
+                                  transform: 'translate(-50%, -50%)',
+                                  width: 2,
+                                  height: 20,
+                                  bgcolor: '#4A7C59',
+                                  borderRadius: 1
+                                }
+                              },
+                              '& .MuiSlider-track': {
+                                display: 'none' // Hide the filled track
+                              },
+                              '& .MuiSlider-rail': {
+                                opacity: 1,
+                                background: 'linear-gradient(90deg, #4A7C5920 0%, #4A7C5940 25%, #4A7C5960 50%, #4A7C5980 75%, #4A7C59 100%)',
+                                height: 24,
+                                borderRadius: 12,
+                                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15)'
+                              },
+                              '& .MuiSlider-mark': {
+                                bgcolor: 'rgba(255,255,255,0.8)',
+                                width: 2,
+                                height: 30,
+                                top: '50%',
+                                transform: 'translateY(-50%)'
+                              },
+                              '& .MuiSlider-markLabel': {
+                                top: 45,
+                                color: '#666',
+                                fontSize: 11,
+                                fontWeight: (props: any) => {
+                                  const index = questions.scale.markers.findIndex((m: any) => m.value === props['data-index']);
+                                  return (index === 0 || index === questions.scale.markers.length - 1) ? 'bold' : 'normal';
+                                }
+                              }
+                            }}
+                            marks={questions.scale.markers.map((m: any) => ({
+                              value: m.value,
+                              label: m.value
+                            }))}
+                          />
+                        </Box>
+
+                        {/* Labels */}
+                        <Box sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          mt: 4,
+                          px: 1
+                        }}>
+                          <Typography variant="caption" sx={{ color: '#999' }}>
+                            {questions.scale.markers[0].label}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: '#999' }}>
+                            {questions.scale.markers[questions.scale.markers.length - 1].label}
+                          </Typography>
+                        </Box>
+                      </Box>
                       
                       {/* Quick select buttons */}
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
@@ -543,6 +638,93 @@ export default function AssessPage() {
                   </Typography>
                 </Box>
 
+                {/* Collapsible Tree Subtypes - 8 types */}
+                <Accordion sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.8)' }}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreOutlined />}
+                    sx={{
+                      '&:hover': { bgcolor: 'rgba(74, 124, 89, 0.05)' },
+                      '& .MuiAccordionSummary-content': { my: 1 }
+                    }}
+                  >
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#4A7C59' }}>
+                      Explore the 8 Tree Subtypes
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Box sx={{
+                      display: 'grid',
+                      gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+                      gap: 2
+                    }}>
+                      {(() => {
+                        // Reorder subtypes: Root, Trunk, Branch, Leaf (pure), then blends
+                        const orderedSubtypes = [
+                          measures.tree.subtypes.find(st => st.id === 'root'),
+                          measures.tree.subtypes.find(st => st.id === 'trunk'),
+                          measures.tree.subtypes.find(st => st.id === 'branch'),
+                          measures.tree.subtypes.find(st => st.id === 'leaf'),
+                          measures.tree.subtypes.find(st => st.id === 'root_trunk'),
+                          measures.tree.subtypes.find(st => st.id === 'trunk_branch'),
+                          measures.tree.subtypes.find(st => st.id === 'branch_leaf'),
+                          measures.tree.subtypes.find(st => st.id === 'root_leaf'),
+                        ].filter(Boolean);
+
+                        return orderedSubtypes.map((subtype) => {
+                          const isActive = (() => {
+                            const treeValue = manualScores.tree;
+                            if (subtype.id === 'root_leaf') {
+                              return (treeValue >= subtype.range[0] && treeValue <= subtype.range[1]) ||
+                                     (subtype.altRange && treeValue >= subtype.altRange[0] && treeValue <= subtype.altRange[1]);
+                            }
+                            return treeValue >= subtype.range[0] && treeValue <= subtype.range[1];
+                          })();
+
+                          // Determine if this is a pure type or blend
+                          const isPureType = ['root', 'trunk', 'branch', 'leaf'].includes(subtype.id);
+                          const baseColor = isPureType ? '#2E5943' : '#5B8BA0'; // Darker green for pure, blue-green for blends
+
+                          return (
+                            <Box
+                              key={subtype.id}
+                              sx={{
+                                p: 2,
+                                bgcolor: isActive ? baseColor : (isPureType ? 'rgba(46, 89, 67, 0.05)' : 'rgba(91, 139, 160, 0.05)'),
+                                color: isActive ? 'white' : '#333',
+                                border: isActive ? `2px solid ${baseColor}` : `1px solid ${isPureType ? '#c5d4cc' : '#c5d9e0'}`,
+                                borderRadius: 2,
+                                transition: 'all 0.3s ease',
+                                cursor: 'pointer',
+                                '&:hover': {
+                                  transform: 'translateY(-2px)',
+                                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                                  bgcolor: isActive ? baseColor : (isPureType ? 'rgba(46, 89, 67, 0.1)' : 'rgba(91, 139, 160, 0.1)')
+                                }
+                              }}
+                              onClick={() => {
+                                // Calculate center value for this subtype
+                                const centerValue = Math.round((subtype.range[0] + subtype.range[1]) / 2);
+                                handleManualScoreChange('tree', centerValue);
+                              }}
+                            >
+                              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1 }}>
+                                {typeof subtype.displayName === 'string' ? subtype.displayName : subtype.displayName}
+                              </Typography>
+                              <Typography variant="caption" sx={{
+                                fontSize: '0.7rem',
+                                lineHeight: 1.3,
+                                display: 'block'
+                              }}>
+                                {subtype.description}
+                              </Typography>
+                            </Box>
+                          );
+                        });
+                      })()}
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+
                 {/* Main content area with compass and description */}
                 <Box sx={{
                   display: 'flex',
@@ -659,19 +841,29 @@ export default function AssessPage() {
                     />
                   </Box>
 
-                  {/* Type description - below on mobile, right side on desktop */}
+                  {/* Numeric display like other measures */}
                   <Box sx={{
                     flex: 1,
                     width: { xs: '100%', md: 'auto' },
-                    maxWidth: { xs: '100%', md: '500px' }
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}>
                     <Box sx={{
-                      p: 2,
-                      bgcolor: 'rgba(74, 124, 89, 0.05)',
+                      p: 3,
+                      bgcolor: 'white',
                       borderRadius: 2,
-                      border: '2px solid #4A7C59'
+                      border: '2px solid #4A7C59',
+                      minWidth: 150,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center'
                     }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#4A7C59', mb: 1 }}>
+                      <Typography variant="h2" sx={{ fontWeight: 'bold', color: '#4A7C59', mb: 1 }}>
+                        {manualScores.tree}
+                      </Typography>
+                      <Typography variant="body1" sx={{ color: '#666', fontWeight: 500 }}>
                         {(() => {
                           const treeValue = manualScores.tree;
                           // Match the logic from CircularSlider
@@ -684,20 +876,6 @@ export default function AssessPage() {
                           if (treeValue <= 81.25) return 'Branch-Leaf';
                           if (treeValue <= 93.75) return 'Leaf';
                           return 'Root-Leaf';
-                        })()}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: '#555' }}>
-                        {(() => {
-                          const treeValue = manualScores.tree;
-                          // Get the matching subtype description from the JSON
-                          const subtype = measures.tree.subtypes.find(st => {
-                            if (st.id === 'root_leaf') {
-                              return (treeValue >= st.range[0] && treeValue <= st.range[1]) ||
-                                     (st.altRange && treeValue >= st.altRange[0] && treeValue <= st.altRange[1]);
-                            }
-                            return treeValue >= st.range[0] && treeValue <= st.range[1];
-                          });
-                          return subtype?.description || '';
                         })()}
                       </Typography>
                     </Box>
@@ -761,188 +939,8 @@ export default function AssessPage() {
           </Box>
         </TabPanel>
 
-        {/* Summary Tab */}
-        <TabPanel value={activeTab} index={2}>
-          <Box sx={{ px: 3, maxWidth: 1200, mx: 'auto' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h5">
-                Your TBAP Profile
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Use {scoreSource === 'manual' ? 'Manual' : 'Questions'} Data
-                </Typography>
-                <Switch
-                  checked={scoreSource === 'questions'}
-                  onChange={(e) => {
-                    if (e.target.checked && calculatedScores) {
-                      setScoreSource('questions');
-                    } else if (!e.target.checked) {
-                      setScoreSource('manual');
-                    }
-                  }}
-                  disabled={!calculatedScores}
-                />
-              </Box>
-            </Box>
-
-            {/* Motivation Compass Section */}
-            {typeof finalScores.tree === 'object' && (
-              <Box sx={{
-                width: '100%',
-                p: 3,
-                mb: 4,
-                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                borderRadius: 3,
-                boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-              }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 3, textAlign: 'center' }}>
-                  Motivation Compass
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
-                  <Box>
-                    <CircularSlider
-                      value={typeof finalScores.tree === 'object' ? finalScores.tree.score : finalScores.tree}
-                      onChange={() => {}} // No-op for display only
-                      disabled={true}
-                    />
-                  </Box>
-                  <Box sx={{
-                    p: 2,
-                    bgcolor: 'rgba(74, 124, 89, 0.05)',
-                    borderRadius: 2,
-                    border: '2px solid #4A7C59',
-                    minWidth: 300
-                  }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#4A7C59', mb: 1 }}>
-                      {finalScores.tree.subtypeName}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: '#555' }}>
-                      Score: {finalScores.tree.score} | Strength: {finalScores.tree.strength}%
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            )}
-
-            {/* Four Beautiful Gauges with Bands */}
-            <Grid container spacing={3}>
-              {/* Knowledge Bucket */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box sx={{
-                  p: 3,
-                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                  borderRadius: 3,
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                }}>
-                  <EnhancedGauge
-                    title="Knowledge Bucket"
-                    value={finalScores.bucket}
-                    measureData={measures.bucket}
-                    color="#5B8BA0"
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.bucket : []}
-                  />
-                </Box>
-              </Grid>
-
-              {/* Resilience */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box sx={{
-                  p: 3,
-                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                  borderRadius: 3,
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                }}>
-                  <EnhancedGauge
-                    title="Resilience"
-                    value={finalScores.thickness}
-                    measureData={measures.thickness}
-                    color="#7BA098"
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.thickness : []}
-                  />
-                </Box>
-              </Grid>
-
-              {/* Gathering */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box sx={{
-                  p: 3,
-                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                  borderRadius: 3,
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                }}>
-                  <EnhancedGauge
-                    title="Gathering"
-                    value={finalScores.input}
-                    measureData={measures.input}
-                    color="#8B6B47"
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.input : []}
-                  />
-                </Box>
-              </Grid>
-
-              {/* Sharing */}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box sx={{
-                  p: 3,
-                  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                  borderRadius: 3,
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                }}>
-                  <EnhancedGauge
-                    title="Sharing"
-                    value={finalScores.output}
-                    measureData={measures.output}
-                    color="#A08B47"
-                    questionValues={scoreSource === 'questions' ? calculatedScores?.questionValues?.output : []}
-                  />
-                </Box>
-              </Grid>
-            </Grid>
-
-            {/* Your TBAP Profile Summary */}
-            <Box sx={{
-              mt: 4,
-              p: 3,
-              background: 'linear-gradient(135deg, #f9f9f9 0%, #e9e9e9 100%)',
-              borderRadius: 3,
-              boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
-            }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333', mb: 2 }}>
-                Your TBAP Profile
-              </Typography>
-            </Box>
-
-
-
-            {/* Interaction Archetype - Hidden for now */}
-            {false && (
-              <Paper sx={{ p: 3, mb: 4, bgcolor: 'primary.main', color: 'white' }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Interaction Archetype: {interactionArchetype.archetypeName}
-                </Typography>
-                <Typography variant="body1">
-                  {interactionArchetype.description}
-                </Typography>
-                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-                  <Chip
-                    label={`${interactionArchetype.orientation} oriented`}
-                    sx={{ bgcolor: 'white', color: 'primary.main' }}
-                  />
-                  <Chip
-                    label={`${interactionArchetype.expression} expression`}
-                    sx={{ bgcolor: 'white', color: 'primary.main' }}
-                  />
-                </Box>
-              </Paper>
-            )}
-
-
-          </Box>
-        </TabPanel>
-
         {/* Analytics Tab */}
-        <TabPanel value={activeTab} index={3}>
+        <TabPanel value={activeTab} index={2}>
           <Box sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
               Your Complete TBAP Analysis

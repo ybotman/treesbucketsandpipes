@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 
 interface CircularSliderProps {
@@ -19,7 +19,6 @@ export default function CircularSlider({
   disabled = false
 }: CircularSliderProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   // Convert value to rotation angle (dial rotates, pointer stays at top)
   const valueToRotation = (val: number) => {
@@ -33,81 +32,14 @@ export default function CircularSlider({
     return 180 - angle;
   };
 
-  // Calculate value from mouse position
-  const handlePointerEvent = (clientX: number, clientY: number) => {
-    if (!svgRef.current) return;
-
-    const rect = svgRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const dx = clientX - centerX;
-    const dy = clientY - centerY;
-
-    // Calculate angle from center (0° is right, 90° is down, etc.)
-    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-    // Convert to our scale where 0° is top, going clockwise
-    angle = angle + 90;
-    if (angle < 0) angle += 360;
-
-    // Adjust so bottom (180°) is where value 1 starts
-    let valueAngle = angle - 180;
-    if (valueAngle < 0) valueAngle += 360;
-
-    // Convert angle to value (1-100 scale)
-    const val = 1 + (valueAngle / 360) * 100;
-
-    // Clamp to 1-100 range
-    const clampedVal = Math.round(Math.max(1, Math.min(100, val)));
-    onChange(clampedVal);
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Handle click on a wedge to rotate it to the top
+  const handleWedgeClick = (targetValue: number) => {
     if (disabled) return;
-    setIsDragging(true);
-    handlePointerEvent(e.clientX, e.clientY);
+
+    // Calculate the midpoint of the clicked wedge's range
+    // This will center the wedge at the top when clicked
+    onChange(targetValue);
   };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
-      handlePointerEvent(e.clientX, e.clientY);
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (disabled) return;
-    setIsDragging(true);
-    const touch = e.touches[0];
-    handlePointerEvent(touch.clientX, touch.clientY);
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (isDragging) {
-      const touch = e.touches[0];
-      handlePointerEvent(touch.clientX, touch.clientY);
-    }
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove);
-      document.addEventListener('touchend', handleMouseUp);
-
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleMouseUp);
-      };
-    }
-  }, [isDragging]);
 
   const rotation = valueToRotation(value);
 
@@ -130,14 +62,14 @@ export default function CircularSlider({
   // The dial labels need to be shifted -90° to align correctly
   // When the dial rotates to show a value at top, the label should match
   const subtypes = [
-    { name: 'Root-Leaf', angle: 90, displayName: ['Root/', 'Leaf'] },     // Values 94-6
-    { name: 'Root', angle: 135, displayName: ['Root'] },                  // Values 7-19
-    { name: 'Root-Trunk', angle: 180, displayName: ['Root/', 'Trunk'] },  // Values 20-31
-    { name: 'Trunk', angle: 225, displayName: ['Trunk'] },                // Values 32-44
-    { name: 'Trunk-Branch', angle: 270, displayName: ['Trunk/', 'Branch'] }, // Values 45-56
-    { name: 'Branch', angle: 315, displayName: ['Branch'] },              // Values 57-69
-    { name: 'Branch-Leaf', angle: 0, displayName: ['Branch/', 'Leaf'] },  // Values 70-81
-    { name: 'Leaf', angle: 45, displayName: ['Leaf'] }                    // Values 82-94
+    { name: 'Root-Leaf', angle: 90, displayName: ['Root/', 'Leaf'], centerValue: 1 },     // Values 94-6, center at 1
+    { name: 'Root', angle: 135, displayName: ['Root'], centerValue: 13 },                  // Values 7-19, center at 13
+    { name: 'Root-Trunk', angle: 180, displayName: ['Root/', 'Trunk'], centerValue: 25 },  // Values 20-31, center at 25
+    { name: 'Trunk', angle: 225, displayName: ['Trunk'], centerValue: 38 },                // Values 32-44, center at 38
+    { name: 'Trunk-Branch', angle: 270, displayName: ['Trunk/', 'Branch'], centerValue: 50 }, // Values 45-56, center at 50
+    { name: 'Branch', angle: 315, displayName: ['Branch'], centerValue: 63 },              // Values 57-69, center at 63
+    { name: 'Branch-Leaf', angle: 0, displayName: ['Branch/', 'Leaf'], centerValue: 75 },  // Values 70-81, center at 75
+    { name: 'Leaf', angle: 45, displayName: ['Leaf'], centerValue: 88 }                    // Values 82-94, center at 88
   ];
 
   return (
@@ -153,9 +85,7 @@ export default function CircularSlider({
         width="400"
         height="400"
         viewBox="0 0 400 400"
-        style={{ cursor: disabled ? 'default' : (isDragging ? 'grabbing' : 'grab') }}
-        onMouseDown={handleMouseDown}
-        onTouchStart={handleTouchStart}
+        style={{ cursor: disabled ? 'default' : 'pointer' }}
       >
         {/* Drop shadow for the dial */}
         <defs>
@@ -200,14 +130,35 @@ export default function CircularSlider({
             const x2 = 200 + 120 * Math.cos(endRad);
             const y2 = 200 + 120 * Math.sin(endRad);
 
+            const isCurrentWedge = getSubtypeLabel(value) === st.name;
+
             return (
               <path
                 key={st.name}
                 d={`M 200 200 L ${x1} ${y1} A 120 120 0 0 1 ${x2} ${y2} Z`}
-                fill='#f5f5f5'
-                fillOpacity={0.5}
-                stroke="#ddd"
-                strokeWidth="1"
+                fill={isCurrentWedge ? '#4A7C59' : '#f5f5f5'}
+                fillOpacity={isCurrentWedge ? 0.2 : 0.3}
+                stroke={isCurrentWedge ? '#4A7C59' : '#ccc'}
+                strokeWidth={isCurrentWedge ? "2" : "1"}
+                style={{
+                  cursor: disabled ? 'default' : 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={() => handleWedgeClick(st.centerValue)}
+                onMouseEnter={(e) => {
+                  if (!disabled && !isCurrentWedge) {
+                    e.currentTarget.setAttribute('fill', '#4A7C59');
+                    e.currentTarget.setAttribute('fillOpacity', '0.15');
+                    e.currentTarget.setAttribute('stroke', '#4A7C59');
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!disabled && !isCurrentWedge) {
+                    e.currentTarget.setAttribute('fill', '#f5f5f5');
+                    e.currentTarget.setAttribute('fillOpacity', '0.3');
+                    e.currentTarget.setAttribute('stroke', '#ccc');
+                  }
+                }}
               />
             );
           })}
@@ -229,6 +180,7 @@ export default function CircularSlider({
                 y2={y2}
                 stroke="#999"
                 strokeWidth="2"
+                style={{ pointerEvents: 'none' }}
               />
             );
           })}
@@ -252,6 +204,7 @@ export default function CircularSlider({
                   fill={isActive ? '#4A7C59' : '#666'}
                   fontWeight={isActive ? 'bold' : 'normal'}
                   transform={`rotate(${-rotation} ${x} ${y})`}
+                  style={{ pointerEvents: 'none', userSelect: 'none' }}
                 >
                   {st.displayName[0]}
                 </text>
@@ -259,7 +212,7 @@ export default function CircularSlider({
             } else {
               // For wrapped text (compound names)
               return (
-                <g key={st.name} transform={`rotate(${-rotation} ${x} ${y})`}>
+                <g key={st.name} transform={`rotate(${-rotation} ${x} ${y})`} style={{ pointerEvents: 'none' }}>
                   <text
                     x={x}
                     y={y - 7}
@@ -268,6 +221,7 @@ export default function CircularSlider({
                     fontSize="12"
                     fill={isActive ? '#4A7C59' : '#666'}
                     fontWeight={isActive ? 'bold' : 'normal'}
+                    style={{ userSelect: 'none' }}
                   >
                     {st.displayName[0]}
                   </text>
@@ -279,6 +233,7 @@ export default function CircularSlider({
                     fontSize="12"
                     fill={isActive ? '#4A7C59' : '#666'}
                     fontWeight={isActive ? 'bold' : 'normal'}
+                    style={{ userSelect: 'none' }}
                   >
                     {st.displayName[1]}
                   </text>
@@ -295,6 +250,7 @@ export default function CircularSlider({
             fill="white"
             stroke="#ddd"
             strokeWidth="1"
+            style={{ pointerEvents: 'none' }}
           />
 
           {/* Center value display */}
@@ -307,6 +263,7 @@ export default function CircularSlider({
             fontWeight="bold"
             fill="#333"
             transform={`rotate(${-rotation} 200 200)`} // Keep text upright
+            style={{ pointerEvents: 'none', userSelect: 'none' }}
           >
             {value}
           </text>

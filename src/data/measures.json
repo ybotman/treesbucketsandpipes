@@ -3,7 +3,7 @@
     "tree": {
       "displayName": "Tree",
       "altName": "Core Motivation",
-      "shortDescription": "What fundamentally drives you - from harmony to mastery to impact to discovery",
+      "shortDescription": "What fundamentally motivates and drives you. While there 4 pure type are Roots, Trunks, Branches, and Leaves. Each PURE has a charactritic pillars follow the types: Collaberation/Harmony, Mastery/Skill, Impact/Contribution, or Novelty/Discovery).  'BLENDS' combine the adjacent types. Indeed, one can be anywhere ont he scale be the blend of a blend.  Select the tree meaurement, that closest represents your core motivations.",
       "fullDescription": "The Tree represents your core motivation - what you're fundamentally wired to seek. It ranges from Root (harmony/belonging) through Trunk (mastery/growth) and Branch (impact/legacy) to Leaf (novelty/discovery).",
       "userLabel": "Your Core Drive",
       "subtypes": [
@@ -15,7 +15,7 @@
           "calculationRange": [88, 99],
           "altRange": [93.75, 100],
           "position": "bottom",
-           "description": "Bridges exploration with connection—uniting Leaf’s love of novelty with Root’s need for belonging. You seek fresh experiences that invite people in and create shared meaning.",
+           "description": "A people centered-experincener.  Seeks fresh experiences that invite people in and create shared meaning.  The more we do together, the merrier we all are.",
   "userDescription": "Because you are a people-centered explorer, new experiences matter most when they’re shared. You’re energized by discovering what’s next and turning that curiosity into moments of togetherness. You naturally weave novelty into community, helping others feel included while you open new doors.",
           "legacyRange": [88, 99]
         },
@@ -26,7 +26,7 @@
           "range": [6.25, 18.75],
           "calculationRange": [1, 12],
           "position": "bottom-right",
-       "description": "Deep connection to community and harmony, motivated by belonging and creating safe spaces.",
+       "description": "Happiness is a community in harmony. Deep connection to community and collaberateion. Truths come from the power of togheter. Motivated by belonging and creating safe spaces.",
   "userDescription": "Because you are a person who values peace and belonging, you find meaning in maintaining relationships and ensuring others feel included. Creating safe, supportive spaces comes naturally to you, and harmony is the gift you bring to those around you.",
           "legacyRange": [1, 12]
         },
@@ -48,7 +48,7 @@
           "range": [31.25, 43.75],
           "calculationRange": [25, 37],
           "position": "top-right",
-  "description": "Focused on mastery and self-improvement through deep knowledge and persistent practice.",
+  "description": "Skills and mastery in self-improvement.  Interaction with people comes with not shallow interactions but knowlegeable and skilled interactions. Seeks conusureship and deep knowledge are present with persistent practice, even in teams.",
   "userDescription": "Because you are a person who strives for growth and capability, you are driven by the pursuit of mastery. Deep knowledge and persistent practice shape your path forward. You find fulfillment in continuous improvement and in becoming more skilled and effective over time.",
           "legacyRange": [25, 37]
         },
@@ -71,7 +71,8 @@
           "range": [56.25, 68.75],
           "calculationRange": [50, 62],
           "position": "top-left",
-          "description": "Driven by impact and contribution, thinking in systems to create lasting change.",
+          "description": "Driven by impact to the large good, and contribution efforts.  Usually focused on to create lasting change in persons, teams, or projects. Collaberation is done but long term impact, rather than for indivautl happienss ",
+        
           "userDescription": "As a Branch, you think in systems and focus on creating lasting change. Your motivation comes from seeing how your work affects the broader picture. You're energized by legacy and meaningful impact.",
           "legacyRange": [50, 62]
         },
@@ -93,7 +94,7 @@
           "range": [81.25, 93.75],
           "calculationRange": [75, 87],
           "position": "bottom-left",
-     "description": "Energized by novelty and discovery, thriving on new experiences and exploration.",
+     "description": "Energized by novelty and discovery.  Thrives on new experiences and exploration.  Many people interactions,and is aways seeking collaberation with poeple to engage about many topics,. Motivator and catalyst for people to gather and do.",
   "userDescription": "Because you are a person who thrives on novelty and discovery, you find energy in fresh starts and uncharted territory. Change excites you, and new experiences fuel your motivation. You bring vitality and curiosity to everything you do, keeping momentum alive through exploration.",
           "legacyRange": [75, 87]
         }
@@ -102,8 +103,8 @@
 
     "bucket": {
       "displayName": "Bucket",
-      "altName": "Gut / Confidence",
-      "shortDescription": "How much you rely on your inner sense of knowing vs. external sources",
+      "altName": "Trust of your knowledge base",
+      "shortDescription": "How much you rely on your EXISTING inner sense of knowing (gut) vs. the need of external sources (people or reading or analysis, etc). In essence, how much do you trust what you know.",
       "fullDescription": "The Bucket represents your decision-making style - whether you trust internal intuition or seek external validation. It reflects how you form and hold your truths.",
       "userLabel": "Your Decision Style",
       "scaleLabels": { "left": "External", "right": "Internal" },
@@ -173,7 +174,7 @@
     "thickness": {
       "displayName": "Bucket Thickness",
       "altName": "Persistence to Reassessment",
-      "shortDescription": "The strength to which you hold on to what you know, when contradictions appear",
+      "shortDescription": "The strength to which you hold on to what you know, when contradictions appear.  How hard is it to BREAK your BUCKET.",
       "fullDescription": "Thickness measures how firmly you hold your truths under pressure. It reflects your willingness to change core beliefs when presented with contradictory evidence.",
       "userLabel": "Your Flexibility",
       "scaleLabels": { "left": "Thin", "right": "Thick" },
